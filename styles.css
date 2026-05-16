@@ -346,7 +346,7 @@ button:disabled {
   overflow: hidden;
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  background: rgba(29, 31, 27, 0.92);
+  background: transparent;
 }
 
 .gallery-grid img {
@@ -354,7 +354,7 @@ button:disabled {
   width: 100%;
   aspect-ratio: 4 / 3;
   object-fit: contain;
-  background: #12140f;
+  background: transparent;
 }
 
 .gallery-grid img.zoom-out {
@@ -373,6 +373,7 @@ button:disabled {
   display: grid;
   gap: 5px;
   padding: 12px;
+  background: rgba(29, 31, 27, 0.92);
   color: var(--muted);
   font-size: 0.92rem;
   line-height: 1.4;
