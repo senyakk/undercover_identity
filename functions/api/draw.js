@@ -130,7 +130,6 @@ function candidatePairs(participants, group, used) {
 
 function eligible(person, role) {
   const tags = new Set(role.tags || []);
-  if (tags.has("romance") && !person.romanceOk) return false;
   if (tags.has("performance") && !person.performanceOk) return false;
   if (tags.has("camera") && !person.cameraOk) return false;
   if (tags.has("music") && !person.musicOk) return false;

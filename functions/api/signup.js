@@ -28,13 +28,18 @@ export async function onRequestPost({ request, env }) {
     const id = crypto.randomUUID();
     const token = makeToken();
     const tokenHash = await sha256(token);
+    const hasPartner = Boolean(body.hasPartner);
+    const partnerName = hasPartner ? String(body.partnerName || "").trim().slice(0, 80) : "";
+    if (hasPartner && partnerName.length < 2) {
+      return json({ error: "Enter your partner's name, or leave the relationship box unchecked." }, 400);
+    }
+
     const participant = {
       id,
       name: name.slice(0, 80),
-      contact: String(body.contact || "").trim().slice(0, 120),
-      partnerName: String(body.partnerName || "").trim().slice(0, 80),
-      partnerKey: normalize(body.partnerName),
-      romanceOk: Boolean(body.romanceOk),
+      hasPartner,
+      partnerName,
+      partnerKey: normalize(partnerName),
       performanceOk: Boolean(body.performanceOk),
       cameraOk: Boolean(body.cameraOk),
       musicOk: Boolean(body.musicOk),

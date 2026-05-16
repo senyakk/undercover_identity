@@ -36,22 +36,20 @@
             <input name="name" type="text" autocomplete="name" maxlength="80" required placeholder="Your party name">
           </label>
 
-          <label>
-            Contact handle
-            <input name="contact" type="text" maxlength="120" placeholder="Optional: WhatsApp, Instagram, email">
-          </label>
-
-          <label>
-            Partner at the party
-            <input name="partnerName" type="text" maxlength="80" placeholder="Optional: name of real partner attending">
-          </label>
+          <fieldset>
+            <legend>Relationship status</legend>
+            <label class="check">
+              <input name="hasPartner" type="checkbox" id="hasPartner">
+              <span>I am in a relationship with someone who will be at the party</span>
+            </label>
+            <label class="conditional-field" id="partnerNameField" hidden>
+              Partner's name at the party
+              <input name="partnerName" type="text" maxlength="80" placeholder="Name they will sign up with" disabled>
+            </label>
+          </fieldset>
 
           <fieldset>
             <legend>Role clearance</legend>
-            <label class="check">
-              <input name="romanceOk" type="checkbox" checked>
-              <span>Fake couple / wedding drama is okay</span>
-            </label>
             <label class="check">
               <input name="performanceOk" type="checkbox" checked>
               <span>Performance-heavy roles are okay</span>
