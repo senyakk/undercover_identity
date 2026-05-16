@@ -2,13 +2,19 @@ const signupForm = document.querySelector("#signupForm");
 const tokenForm = document.querySelector("#tokenForm");
 const statusLine = document.querySelector("#statusLine");
 const resultBox = document.querySelector("#resultBox");
+const romanceOkInput = document.querySelector("#romanceOk");
+const partnerNameField = document.querySelector("#partnerNameField");
+const partnerNameInput = partnerNameField.querySelector("input");
 
 const params = new URLSearchParams(window.location.search);
 const tokenFromUrl = params.get("token");
 
 init();
 
+romanceOkInput.addEventListener("change", syncPartnerField);
+
 async function init() {
+  syncPartnerField();
   await refreshState();
   if (tokenFromUrl) {
     await reveal(tokenFromUrl);
@@ -40,6 +46,7 @@ signupForm.addEventListener("submit", async (event) => {
     if (!response.ok) throw new Error(data.error || "Signup failed");
 
     signupForm.reset();
+    syncPartnerField();
     showSignupSuccess(data.revealUrl, data.revealCode, data.assignment);
     await refreshState();
   } catch (error) {
@@ -173,4 +180,11 @@ function extractToken(value) {
   } catch {
     return raw;
   }
+}
+
+function syncPartnerField() {
+  const enabled = romanceOkInput.checked;
+  partnerNameField.hidden = !enabled;
+  partnerNameInput.disabled = !enabled;
+  if (!enabled) partnerNameInput.value = "";
 }
