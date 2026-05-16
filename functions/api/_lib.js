@@ -57,7 +57,8 @@ export function publicOrigin(request) {
 }
 
 export function makeToken() {
-  const bytes = new Uint8Array(24);
+  const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  const bytes = new Uint8Array(5);
   crypto.getRandomValues(bytes);
-  return [...bytes].map((byte) => byte.toString(16).padStart(2, "0")).join("");
+  return [...bytes].map((byte) => alphabet[byte % alphabet.length]).join("");
 }

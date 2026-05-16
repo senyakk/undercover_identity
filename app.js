@@ -190,10 +190,15 @@ function extractToken(value) {
 
   try {
     const url = new URL(raw);
-    return url.searchParams.get("token") || raw;
+    return normalizeRevealCode(url.searchParams.get("token") || raw);
   } catch {
-    return raw;
+    return normalizeRevealCode(raw);
   }
+}
+
+function normalizeRevealCode(value) {
+  const code = String(value || "").trim();
+  return /^[a-z]{5}$/i.test(code) ? code.toUpperCase() : code;
 }
 
 function syncPartnerField() {

@@ -24,8 +24,7 @@ export async function onRequestPost({ request, env }) {
     }
 
     const id = crypto.randomUUID();
-    const token = makeToken();
-    const tokenHash = await sha256(token);
+    const { token, tokenHash } = await createRevealCode(kv);
     const partnerName = String(body.partnerName || "").trim().slice(0, 80);
     const attendance = normalizeAttendance(body.attendance);
 
@@ -66,4 +65,15 @@ function normalizeAttendance(value) {
     return value;
   }
   return "both";
+}
+
+async function createRevealCode(kv) {
+  for (let attempt = 0; attempt < 10; attempt += 1) {
+    const token = makeToken();
+    const tokenHash = await sha256(token);
+    if (!(await kv.get(`reveal:${tokenHash}`))) {
+      return { token, tokenHash };
+    }
+  }
+  throw new Error("Could not create a unique reveal code. Try again.");
 }
