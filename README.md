@@ -11,6 +11,7 @@ Recommended Pages build settings:
 ```text
 Root directory: leave blank/repository root
 Build command: npm run build
+Deploy command: npx wrangler pages deploy . --project-name spy-party
 Build output directory: .
 ```
 
