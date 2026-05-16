@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Mission Control</title>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <main class="shell compact">
+      <section class="hero">
+        <div>
+          <p class="eyebrow">mission control</p>
+          <h1>Run the draw</h1>
+          <p class="brief">This page triggers assignment but never prints the role list.</p>
+        </div>
+        <div class="stamp" aria-hidden="true">
+          <span>NO</span>
+          <span>PEEKING</span>
+        </div>
+      </section>
+
+      <section class="status-line" id="statusLine" aria-live="polite">
+        Checking roster...
+      </section>
+
+      <form class="panel" id="drawForm">
+        <div class="panel-header">
+          <p class="eyebrow">authorization</p>
+          <h2>Classified trigger</h2>
+        </div>
+
+        <label>
+          Admin secret
+          <input name="adminSecret" type="password" autocomplete="current-password" required placeholder="Cloudflare ADMIN_SECRET">
+        </label>
+
+        <button class="primary" type="submit">Run draw</button>
+        <div id="resultBox" class="result empty">Assignments will be stored privately against each guest's reveal code.</div>
+      </form>
+    </main>
+
+    <script src="/admin.js" type="module"></script>
+  </body>
+</html>

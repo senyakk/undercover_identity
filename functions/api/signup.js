@@ -1,0 +1,59 @@
+import {
+  DRAW_KEY,
+  getParticipantIds,
+  json,
+  makeToken,
+  normalize,
+  publicOrigin,
+  putParticipantIds,
+  readJson,
+  requireKv,
+  sha256
+} from "./_lib.js";
+
+export async function onRequestPost({ request, env }) {
+  try {
+    const kv = requireKv(env);
+    const drawComplete = await kv.get(DRAW_KEY);
+    if (drawComplete) {
+      return json({ error: "Signup is closed because the draw has already run." }, 409);
+    }
+
+    const body = await readJson(request);
+    const name = String(body.name || "").trim();
+    if (name.length < 2) {
+      return json({ error: "Enter a name with at least two characters." }, 400);
+    }
+
+    const id = crypto.randomUUID();
+    const token = makeToken();
+    const tokenHash = await sha256(token);
+    const participant = {
+      id,
+      name: name.slice(0, 80),
+      contact: String(body.contact || "").trim().slice(0, 120),
+      partnerName: String(body.partnerName || "").trim().slice(0, 80),
+      partnerKey: normalize(body.partnerName),
+      romanceOk: Boolean(body.romanceOk),
+      performanceOk: Boolean(body.performanceOk),
+      cameraOk: Boolean(body.cameraOk),
+      musicOk: Boolean(body.musicOk),
+      alcoholOk: Boolean(body.alcoholOk),
+      avoidRoles: String(body.avoidRoles || "").trim().slice(0, 500),
+      avoidKey: normalize(body.avoidRoles),
+      tokenHash,
+      createdAt: new Date().toISOString()
+    };
+
+    await kv.put(`participant:${id}`, JSON.stringify(participant));
+    await kv.put(`reveal:${tokenHash}`, id);
+    const ids = await getParticipantIds(kv);
+    ids.push(id);
+    await putParticipantIds(kv, ids);
+
+    const revealUrl = `${publicOrigin(request)}/?token=${encodeURIComponent(token)}`;
+    return json({ revealUrl, revealCode: token });
+  } catch (error) {
+    return json({ error: error.message || "Signup failed" }, 500);
+  }
+}

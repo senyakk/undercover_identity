@@ -1,0 +1,9 @@
+{
+  "name": "spy-party-draw",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "node --check app.js && node --check admin.js && node --check functions/api/_lib.js && node --check functions/api/signup.js && node --check functions/api/state.js && node --check functions/api/reveal.js && node --check functions/api/draw.js"
+  }
+}

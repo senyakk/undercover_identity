@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Undercover Birthday Assignment</title>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <main class="shell">
+      <section class="hero">
+        <div>
+          <p class="eyebrow">classified party intake</p>
+          <h1>Undercover Assignment Desk</h1>
+          <p class="brief">Submit your cover details. Your private dossier link appears once and reveals your role after Mission Control runs the draw.</p>
+        </div>
+        <div class="stamp" aria-hidden="true">
+          <span>TOP</span>
+          <span>SECRET</span>
+        </div>
+      </section>
+
+      <section class="status-line" id="statusLine" aria-live="polite">
+        Checking agency status...
+      </section>
+
+      <section class="grid">
+        <form class="panel" id="signupForm">
+          <div class="panel-header">
+            <p class="eyebrow">agent intake</p>
+            <h2>Join the operation</h2>
+          </div>
+
+          <label>
+            Name
+            <input name="name" type="text" autocomplete="name" maxlength="80" required placeholder="Your party name">
+          </label>
+
+          <label>
+            Contact handle
+            <input name="contact" type="text" maxlength="120" placeholder="Optional: WhatsApp, Instagram, email">
+          </label>
+
+          <label>
+            Partner at the party
+            <input name="partnerName" type="text" maxlength="80" placeholder="Optional: name of real partner attending">
+          </label>
+
+          <fieldset>
+            <legend>Role clearance</legend>
+            <label class="check">
+              <input name="romanceOk" type="checkbox" checked>
+              <span>Fake couple / wedding drama is okay</span>
+            </label>
+            <label class="check">
+              <input name="performanceOk" type="checkbox" checked>
+              <span>Performance-heavy roles are okay</span>
+            </label>
+            <label class="check">
+              <input name="cameraOk" type="checkbox" checked>
+              <span>Photo or video roles are okay</span>
+            </label>
+            <label class="check">
+              <input name="musicOk" type="checkbox" checked>
+              <span>Music control roles are okay</span>
+            </label>
+            <label class="check">
+              <input name="alcoholOk" type="checkbox" checked>
+              <span>Drink-serving roles are okay</span>
+            </label>
+          </fieldset>
+
+          <label>
+            Hard no roles
+            <textarea name="avoidRoles" rows="3" maxlength="500" placeholder="Optional: anything you really do not want"></textarea>
+          </label>
+
+          <button class="primary" type="submit">Request dossier</button>
+          <p class="microcopy">Save the reveal link after signup. It is shown once.</p>
+        </form>
+
+        <section class="panel reveal-panel">
+          <div class="panel-header">
+            <p class="eyebrow">private channel</p>
+            <h2>Dossier reveal</h2>
+          </div>
+
+          <div id="resultBox" class="result empty">
+            Paste a reveal link or open your saved dossier link after the draw.
+          </div>
+
+          <form id="tokenForm" class="token-row">
+            <input name="token" type="text" autocomplete="off" placeholder="Reveal code">
+            <button type="submit">Open</button>
+          </form>
+        </section>
+      </section>
+    </main>
+
+    <script src="/app.js" type="module"></script>
+  </body>
+</html>
