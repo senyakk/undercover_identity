@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "npm run check",
-    "check": "node --check app.js && node --check admin.js && node --check functions/api/_lib.js && node --check functions/api/_assign.js && node --check functions/api/signup.js && node --check functions/api/state.js && node --check functions/api/reveal.js && node --check functions/api/draw.js && node --check functions/api/reset.js && node --check functions/api/roster.js",
+    "check": "node --check app.js && node --check admin.js && node --check functions/api/_lib.js && node --check functions/api/_assign.js && node --check functions/api/signup.js && node --check functions/api/state.js && node --check functions/api/reveal.js && node --check functions/api/draw.js && node --check functions/api/reset.js && node --check functions/api/roster.js && node --check functions/api/roles.js",
     "deploy": "wrangler pages deploy . --project-name spy-party"
   }
 }

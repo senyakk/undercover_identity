@@ -2,6 +2,7 @@ const drawForm = document.querySelector("#drawForm");
 const statusLine = document.querySelector("#statusLine");
 const resultBox = document.querySelector("#resultBox");
 const rosterButton = document.querySelector("#rosterButton");
+const rolesButton = document.querySelector("#rolesButton");
 const clearDrawButton = document.querySelector("#clearDrawButton");
 const redrawButton = document.querySelector("#redrawButton");
 const clearRosterButton = document.querySelector("#clearRosterButton");
@@ -69,6 +70,45 @@ rosterButton.addEventListener("click", async () => {
   } finally {
     rosterButton.disabled = false;
     rosterButton.textContent = originalLabel;
+  }
+});
+
+rolesButton.addEventListener("click", async () => {
+  if (!drawForm.reportValidity()) return;
+
+  const originalLabel = rolesButton.textContent;
+  const form = new FormData(drawForm);
+  rolesButton.disabled = true;
+  rolesButton.textContent = "Loading...";
+
+  try {
+    const response = await fetch("/api/roles", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ adminSecret: form.get("adminSecret") })
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || "Role count unavailable");
+
+    resultBox.className = "result";
+    resultBox.innerHTML = `
+      <h3>Role pool</h3>
+      <dl>
+        <div><dt>Total roles</dt><dd>${data.totalRoles}</dd></div>
+        <div><dt>Single roles</dt><dd>${data.singleRoles}</dd></div>
+        <div><dt>Pair roles</dt><dd>${data.pairedRoles}</dd></div>
+        <div><dt>Role groups</dt><dd>${data.groups}</dd></div>
+        <div><dt>Currently assigned</dt><dd>${data.usedRoles}</dd></div>
+        <div><dt>Currently unused</dt><dd>${data.unusedRoles}</dd></div>
+      </dl>
+    `;
+    await refreshState();
+  } catch (error) {
+    resultBox.className = "result";
+    resultBox.textContent = error.message;
+  } finally {
+    rolesButton.disabled = false;
+    rolesButton.textContent = originalLabel;
   }
 });
 

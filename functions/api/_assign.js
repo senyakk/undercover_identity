@@ -140,7 +140,7 @@ function roleId(group, slotIndex) {
   return `${group.key}:${slotIndex}`;
 }
 
-async function getUsedRoleIds(kv) {
+export async function getUsedRoleIds(kv) {
   const usedRoleIds = new Set();
   let cursor;
 
