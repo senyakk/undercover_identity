@@ -35,10 +35,7 @@ signupForm.addEventListener("submit", async (event) => {
       hasPartner,
       partnerName: hasPartner ? form.get("partnerName") : "",
       romanceOk: form.has("romanceOk"),
-      performanceOk: form.has("performanceOk"),
-      cameraOk: form.has("cameraOk"),
-      musicOk: form.has("musicOk"),
-      alcoholOk: form.has("alcoholOk")
+      musicOk: form.has("musicOk")
     };
 
     const response = await fetch("/api/signup", {

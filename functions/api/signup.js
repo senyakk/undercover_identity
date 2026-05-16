@@ -36,10 +36,7 @@ export async function onRequestPost({ request, env }) {
       partnerName,
       partnerKey: normalize(partnerName),
       romanceOk: Boolean(body.romanceOk),
-      performanceOk: Boolean(body.performanceOk),
-      cameraOk: Boolean(body.cameraOk),
       musicOk: Boolean(body.musicOk),
-      alcoholOk: Boolean(body.alcoholOk),
       tokenHash,
       createdAt: new Date().toISOString()
     };
