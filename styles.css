@@ -135,6 +135,21 @@ h2 {
   margin-bottom: 20px;
 }
 
+.instructions {
+  display: grid;
+  gap: 8px;
+  margin: -6px 0 18px;
+  padding: 13px 14px;
+  border-left: 3px solid var(--amber);
+  background: rgba(241, 188, 98, 0.08);
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.instructions p {
+  margin: 0;
+}
+
 label,
 fieldset {
   display: grid;
