@@ -353,8 +353,16 @@ button:disabled {
   display: block;
   width: 100%;
   aspect-ratio: 4 / 3;
-  object-fit: cover;
+  object-fit: contain;
   background: #12140f;
+}
+
+.gallery-grid img.zoom-out {
+  padding: 10px;
+}
+
+.gallery-grid img.zoom-out-soft {
+  padding: 6px;
 }
 
 .gallery-grid figcaption {
