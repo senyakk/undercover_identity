@@ -37,8 +37,7 @@ signupForm.addEventListener("submit", async (event) => {
       performanceOk: form.has("performanceOk"),
       cameraOk: form.has("cameraOk"),
       musicOk: form.has("musicOk"),
-      alcoholOk: form.has("alcoholOk"),
-      avoidRoles: form.get("avoidRoles")
+      alcoholOk: form.has("alcoholOk")
     };
 
     const response = await fetch("/api/signup", {
@@ -51,7 +50,7 @@ signupForm.addEventListener("submit", async (event) => {
 
     signupForm.reset();
     syncPartnerField();
-    showSignupSuccess(data.revealUrl, data.revealCode);
+    showSignupSuccess(data.revealUrl, data.revealCode, data.assignment);
     await refreshState();
   } catch (error) {
     showMessage(error.message, true);
@@ -73,13 +72,9 @@ async function refreshState() {
     const response = await fetch("/api/state");
     const data = await response.json();
     const label = data.drawComplete
-      ? `Draw complete. ${data.participantCount} agents are in the field.`
+      ? `Draw complete. ${data.participantCount} agents are in the field. Late signup is still open.`
       : `${data.participantCount} agent${data.participantCount === 1 ? "" : "s"} registered. Draw pending.`;
     statusLine.textContent = label;
-    signupForm.querySelector("button[type='submit']").disabled = data.drawComplete;
-    if (data.drawComplete) {
-      signupForm.classList.add("disabled");
-    }
   } catch {
     statusLine.textContent = "Agency channel offline. Try again in a moment.";
   }
@@ -110,7 +105,11 @@ async function reveal(token) {
 
 function renderAssignment(assignment) {
   resultBox.className = "result";
-  resultBox.innerHTML = `
+  resultBox.innerHTML = assignmentHtml(assignment);
+}
+
+function assignmentHtml(assignment) {
+  return `
     <h3>CLASSIFIED DOSSIER</h3>
     <dl>
       <div>
@@ -137,16 +136,17 @@ function renderAssignment(assignment) {
   `;
 }
 
-function showSignupSuccess(revealUrl, revealCode) {
+function showSignupSuccess(revealUrl, revealCode, assignment = null) {
   resultBox.className = "result";
   resultBox.innerHTML = `
     <h3>Dossier link issued</h3>
-    <p>Save this private link. It is your only normal way back into the reveal channel.</p>
+    <p>${assignment ? "The draw has already run, so your role is ready now. Save this private link too." : "Save this private link. It is your only normal way back into the reveal channel."}</p>
     <div class="copy-row">
       <input value="${escapeAttribute(revealUrl)}" readonly aria-label="Private reveal link">
       <button type="button" id="copyLink">Copy</button>
     </div>
     <p class="microcopy">Reveal code: <strong>${escapeHtml(revealCode)}</strong></p>
+    ${assignment ? assignmentHtml(assignment) : ""}
   `;
 
   document.querySelector("#copyLink").addEventListener("click", async () => {
@@ -189,6 +189,6 @@ function syncPartnerField() {
   const enabled = hasPartnerInput.checked;
   partnerNameField.hidden = !enabled;
   partnerNameInput.disabled = !enabled;
-  partnerNameInput.required = enabled;
+  partnerNameInput.required = false;
   if (!enabled) partnerNameInput.value = "";
 }

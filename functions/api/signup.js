@@ -10,14 +10,12 @@ import {
   requireKv,
   sha256
 } from "./_lib.js";
+import { assignLateRole } from "./_assign.js";
 
 export async function onRequestPost({ request, env }) {
   try {
     const kv = requireKv(env);
-    const drawComplete = await kv.get(DRAW_KEY);
-    if (drawComplete) {
-      return json({ error: "Signup is closed because the draw has already run." }, 409);
-    }
+    const drawComplete = Boolean(await kv.get(DRAW_KEY));
 
     const body = await readJson(request);
     const name = String(body.name || "").trim();
@@ -30,9 +28,6 @@ export async function onRequestPost({ request, env }) {
     const tokenHash = await sha256(token);
     const hasPartner = Boolean(body.hasPartner);
     const partnerName = hasPartner ? String(body.partnerName || "").trim().slice(0, 80) : "";
-    if (hasPartner && partnerName.length < 2) {
-      return json({ error: "Enter your partner's name, or leave the relationship box unchecked." }, 400);
-    }
 
     const participant = {
       id,
@@ -44,20 +39,24 @@ export async function onRequestPost({ request, env }) {
       cameraOk: Boolean(body.cameraOk),
       musicOk: Boolean(body.musicOk),
       alcoholOk: Boolean(body.alcoholOk),
-      avoidRoles: String(body.avoidRoles || "").trim().slice(0, 500),
-      avoidKey: normalize(body.avoidRoles),
       tokenHash,
       createdAt: new Date().toISOString()
     };
 
+    const lateAssignment = drawComplete
+      ? { ...(await assignLateRole(kv, participant)), assignedAt: new Date().toISOString() }
+      : null;
     await kv.put(`participant:${id}`, JSON.stringify(participant));
     await kv.put(`reveal:${tokenHash}`, id);
     const ids = await getParticipantIds(kv);
     ids.push(id);
     await putParticipantIds(kv, ids);
+    if (lateAssignment) {
+      await kv.put(`assignment:${id}`, JSON.stringify(lateAssignment));
+    }
 
     const revealUrl = `${publicOrigin(request)}/?token=${encodeURIComponent(token)}`;
-    return json({ revealUrl, revealCode: token });
+    return json({ revealUrl, revealCode: token, drawComplete, assignment: lateAssignment });
   } catch (error) {
     return json({ error: error.message || "Signup failed" }, 500);
   }

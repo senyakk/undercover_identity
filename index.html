@@ -40,11 +40,11 @@
             <legend>Relationship status</legend>
             <label class="check">
               <input name="hasPartner" type="checkbox" id="hasPartner">
-              <span>I am in a relationship with someone who will be at the party</span>
+              <span>I am in a relationship</span>
             </label>
             <label class="conditional-field" id="partnerNameField" hidden>
-              Partner's name at the party
-              <input name="partnerName" type="text" maxlength="80" placeholder="Name they will sign up with" disabled>
+              Partner's name, if they will be at the party
+              <input name="partnerName" type="text" maxlength="80" placeholder="Optional: only if they will be at the party" disabled>
             </label>
           </fieldset>
 
@@ -67,11 +67,6 @@
               <span>Drink-serving roles are okay</span>
             </label>
           </fieldset>
-
-          <label>
-            Hard no roles
-            <textarea name="avoidRoles" rows="3" maxlength="500" placeholder="Optional: anything you really do not want"></textarea>
-          </label>
 
           <button class="primary" type="submit">Request dossier</button>
           <p class="microcopy">Save the reveal link after signup. It is shown once.</p>

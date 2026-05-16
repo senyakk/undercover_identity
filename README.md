@@ -45,6 +45,8 @@ If using Wrangler, replace the placeholder IDs in `wrangler.toml`.
 
 Guests receive a reveal link at signup. They should save it. Before the draw, it shows a waiting message; after the draw, it reveals only their own dossier.
 
+Late guests can still sign up after the draw. They receive an unused eligible role immediately, as long as there are suitable roles left in the pool.
+
 ## Notes on secrecy
 
 The normal UI never shows the organizer the assignment list. Because this project owns the database and code, a project admin could technically inspect KV or change the code to peek. For maximum surprise, let a trusted non-player own the Cloudflare project or the `ADMIN_SECRET`.
