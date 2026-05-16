@@ -4,8 +4,7 @@ pages_build_output_dir = "."
 
 [[kv_namespaces]]
 binding = "SPY_PARTY_KV"
-id = "REPLACE_WITH_PRODUCTION_KV_NAMESPACE_ID"
-preview_id = "REPLACE_WITH_PREVIEW_KV_NAMESPACE_ID"
+id = "14065848e7eb4ba89cdf1ba3c77462c0"
 
 [vars]
 ADMIN_SECRET = "game_begin"
