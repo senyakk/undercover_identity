@@ -3,6 +3,7 @@ const statusLine = document.querySelector("#statusLine");
 const resultBox = document.querySelector("#resultBox");
 const rosterButton = document.querySelector("#rosterButton");
 const rolesButton = document.querySelector("#rolesButton");
+const removeAgentButton = document.querySelector("#removeAgentButton");
 const clearDrawButton = document.querySelector("#clearDrawButton");
 const redrawButton = document.querySelector("#redrawButton");
 const clearRosterButton = document.querySelector("#clearRosterButton");
@@ -112,6 +113,29 @@ rolesButton.addEventListener("click", async () => {
   }
 });
 
+removeAgentButton.addEventListener("click", async () => {
+  if (!drawForm.reportValidity()) return;
+  const form = new FormData(drawForm);
+  const name = String(form.get("removeName") || "").trim();
+  if (!name) {
+    resultBox.className = "result";
+    resultBox.textContent = "Enter the exact registered name to remove.";
+    return;
+  }
+  if (!confirm(`Remove "${name}" from the roster and delete their reveal link?`)) return;
+
+  await runResetAction({
+    action: "removeParticipant",
+    button: removeAgentButton,
+    workingLabel: "Removing...",
+    extraData: { name },
+    successTitle: "Agent removed",
+    successMessage: (data) =>
+      `${data.removedName} was removed. ${data.participantCount} agents remain.${data.drawComplete ? " The draw had already happened, so consider redrawing if this affected a pair role." : ""}`
+  });
+  drawForm.elements.removeName.value = "";
+});
+
 clearDrawButton.addEventListener("click", async () => {
   if (!drawForm.reportValidity()) return;
   if (!confirm("Discard the current assignments but keep every signed up agent and reveal link? Guests will wait until you run a new draw.")) return;
@@ -174,7 +198,7 @@ function escapeHtml(value) {
     .replaceAll("'", "&#039;");
 }
 
-async function runResetAction({ action, button, workingLabel, successTitle, successMessage }) {
+async function runResetAction({ action, button, workingLabel, successTitle, successMessage, extraData = {} }) {
   const originalLabel = button.textContent;
   const form = new FormData(drawForm);
   button.disabled = true;
@@ -184,7 +208,7 @@ async function runResetAction({ action, button, workingLabel, successTitle, succ
     const response = await fetch("/api/reset", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ adminSecret: form.get("adminSecret"), action })
+      body: JSON.stringify({ adminSecret: form.get("adminSecret"), action, ...extraData })
     });
     const data = await response.json();
     if (!response.ok) throw new Error(data.error || "Admin action failed");

@@ -2,19 +2,13 @@ const signupForm = document.querySelector("#signupForm");
 const tokenForm = document.querySelector("#tokenForm");
 const statusLine = document.querySelector("#statusLine");
 const resultBox = document.querySelector("#resultBox");
-const hasPartnerInput = document.querySelector("#hasPartner");
-const partnerNameField = document.querySelector("#partnerNameField");
-const partnerNameInput = partnerNameField.querySelector("input");
 
 const params = new URLSearchParams(window.location.search);
 const tokenFromUrl = params.get("token");
 
 init();
 
-hasPartnerInput.addEventListener("change", syncPartnerField);
-
 async function init() {
-  syncPartnerField();
   await refreshState();
   if (tokenFromUrl) {
     await reveal(tokenFromUrl);
@@ -29,11 +23,10 @@ signupForm.addEventListener("submit", async (event) => {
 
   try {
     const form = new FormData(signupForm);
-    const hasPartner = form.has("hasPartner");
+    const partnerName = String(form.get("partnerName") || "").trim();
     const payload = {
       name: form.get("name"),
-      hasPartner,
-      partnerName: hasPartner ? form.get("partnerName") : "",
+      partnerName,
       romanceOk: form.has("romanceOk"),
       musicOk: form.has("musicOk")
     };
@@ -47,7 +40,6 @@ signupForm.addEventListener("submit", async (event) => {
     if (!response.ok) throw new Error(data.error || "Signup failed");
 
     signupForm.reset();
-    syncPartnerField();
     showSignupSuccess(data.revealUrl, data.revealCode, data.assignment);
     await refreshState();
   } catch (error) {
@@ -181,12 +173,4 @@ function extractToken(value) {
   } catch {
     return raw;
   }
-}
-
-function syncPartnerField() {
-  const enabled = hasPartnerInput.checked;
-  partnerNameField.hidden = !enabled;
-  partnerNameInput.disabled = !enabled;
-  partnerNameInput.required = false;
-  if (!enabled) partnerNameInput.value = "";
 }

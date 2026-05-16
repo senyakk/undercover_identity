@@ -3,6 +3,8 @@ import {
   INDEX_KEY,
   getParticipantIds,
   json,
+  normalize,
+  putParticipantIds,
   readJson,
   requireKv
 } from "./_lib.js";
@@ -21,6 +23,11 @@ export async function onRequestPost({ request, env }) {
       return json({ action: "clearRoster", ...deleted });
     }
 
+    if (body.action === "removeParticipant") {
+      const result = await removeParticipantByName(kv, body.name);
+      return json({ action: "removeParticipant", ...result });
+    }
+
     if (body.action === "clearDraw") {
       const assignmentCount = await clearDraw(kv);
       const ids = await getParticipantIds(kv);
@@ -36,6 +43,56 @@ export async function onRequestPost({ request, env }) {
   } catch (error) {
     return json({ error: error.message || "Reset failed" }, 500);
   }
+}
+
+async function removeParticipantByName(kv, name) {
+  const targetName = String(name || "").trim();
+  if (!targetName) {
+    throw new Error("Enter the exact registered name to remove.");
+  }
+
+  const ids = await getParticipantIds(kv);
+  const matches = [];
+  for (const id of ids) {
+    const raw = await kv.get(`participant:${id}`);
+    if (!raw) continue;
+    const participant = JSON.parse(raw);
+    if (normalize(participant.name) === normalize(targetName)) {
+      matches.push(participant);
+    }
+  }
+
+  if (!matches.length) {
+    throw new Error(`No registered agent found named "${targetName}".`);
+  }
+
+  if (matches.length > 1) {
+    throw new Error(`Multiple registered agents are named "${targetName}". Remove by name is ambiguous.`);
+  }
+
+  const participant = matches[0];
+  const remainingIds = ids.filter((id) => id !== participant.id);
+  await kv.delete(`participant:${participant.id}`);
+  await kv.delete(`assignment:${participant.id}`);
+  if (participant.tokenHash) {
+    await kv.delete(`reveal:${participant.tokenHash}`);
+  }
+  await putParticipantIds(kv, remainingIds);
+
+  const drawRaw = await kv.get(DRAW_KEY);
+  if (drawRaw) {
+    if (remainingIds.length) {
+      await kv.put(DRAW_KEY, JSON.stringify({ ...JSON.parse(drawRaw), participantCount: remainingIds.length }));
+    } else {
+      await kv.delete(DRAW_KEY);
+    }
+  }
+
+  return {
+    removedName: participant.name,
+    participantCount: remainingIds.length,
+    drawComplete: Boolean(drawRaw)
+  };
 }
 
 async function clearRoster(kv) {
