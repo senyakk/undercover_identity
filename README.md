@@ -4,6 +4,25 @@ A tiny Cloudflare Pages app for collecting party guests, assigning spy-theme rol
 
 ## Cloudflare setup
 
+Deploy this as a Cloudflare Pages project, not with `wrangler deploy`.
+
+Recommended Pages build settings:
+
+```text
+Root directory: leave blank/repository root
+Build command: npm run build
+Build output directory: .
+```
+
+If Cloudflare is connected to a parent repository instead, set the root directory to
+`undercover_identity`.
+
+For a local Wrangler deploy, run:
+
+```sh
+npm run deploy
+```
+
 Create a KV namespace and bind it to the Pages project as:
 
 ```text
