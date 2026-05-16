@@ -272,6 +272,13 @@ button:disabled {
   margin: 0;
 }
 
+.roster-list {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding-left: 22px;
+}
+
 .copy-row,
 .token-row {
   display: grid;

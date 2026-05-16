@@ -1,6 +1,7 @@
 const drawForm = document.querySelector("#drawForm");
 const statusLine = document.querySelector("#statusLine");
 const resultBox = document.querySelector("#resultBox");
+const rosterButton = document.querySelector("#rosterButton");
 const clearDrawButton = document.querySelector("#clearDrawButton");
 const redrawButton = document.querySelector("#redrawButton");
 const clearRosterButton = document.querySelector("#clearRosterButton");
@@ -36,6 +37,38 @@ drawForm.addEventListener("submit", async (event) => {
   } finally {
     button.disabled = false;
     button.textContent = "Run draw";
+  }
+});
+
+rosterButton.addEventListener("click", async () => {
+  if (!drawForm.reportValidity()) return;
+
+  const originalLabel = rosterButton.textContent;
+  const form = new FormData(drawForm);
+  rosterButton.disabled = true;
+  rosterButton.textContent = "Loading...";
+
+  try {
+    const response = await fetch("/api/roster", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ adminSecret: form.get("adminSecret") })
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || "Roster unavailable");
+
+    resultBox.className = "result";
+    resultBox.innerHTML = `
+      <h3>Registered agents</h3>
+      ${data.names.length ? `<ol class="roster-list">${data.names.map((name) => `<li>${escapeHtml(name)}</li>`).join("")}</ol>` : "<p>No agents registered yet.</p>"}
+    `;
+    await refreshState();
+  } catch (error) {
+    resultBox.className = "result";
+    resultBox.textContent = error.message;
+  } finally {
+    rosterButton.disabled = false;
+    rosterButton.textContent = originalLabel;
   }
 });
 
@@ -90,6 +123,15 @@ async function refreshState() {
   } catch {
     statusLine.textContent = "Agency channel offline.";
   }
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
 }
 
 async function runResetAction({ action, button, workingLabel, successTitle, successMessage }) {
