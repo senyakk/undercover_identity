@@ -34,6 +34,7 @@ signupForm.addEventListener("submit", async (event) => {
       name: form.get("name"),
       hasPartner,
       partnerName: hasPartner ? form.get("partnerName") : "",
+      romanceOk: form.has("romanceOk"),
       performanceOk: form.has("performanceOk"),
       cameraOk: form.has("cameraOk"),
       musicOk: form.has("musicOk"),

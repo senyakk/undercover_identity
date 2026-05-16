@@ -49,6 +49,8 @@ Late guests can still sign up after the draw. They receive an unused eligible ro
 
 The admin page can also discard the current draw, discard and redraw the existing roster, or discard the entire roster and all reveal links.
 
+Roles are edited in `roles.csv`. The build step generates `functions/api/_roles.generated.js` from that CSV for Cloudflare Pages Functions.
+
 ## Notes on secrecy
 
 The normal UI never shows the organizer the assignment list. Because this project owns the database and code, a project admin could technically inspect KV or change the code to peek. For maximum surprise, let a trusted non-player own the Cloudflare project or the `ADMIN_SECRET`.

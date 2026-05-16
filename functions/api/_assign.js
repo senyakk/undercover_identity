@@ -12,6 +12,7 @@ export function assignRoles(participants) {
 
 export async function assignLateRole(kv, participant) {
   const usedRoleIds = await getUsedRoleIds(kv);
+  const usedGroupKeys = await getUsedGroupKeys(kv);
   const candidates = shuffle(
     ROLE_GROUPS
       .flatMap((group) =>
@@ -19,7 +20,9 @@ export async function assignLateRole(kv, participant) {
       )
       .filter(({ group, role, slotIndex }) => {
         if (group.type !== "single") return false;
-        return !usedRoleIds.has(roleId(group, slotIndex)) && eligible(participant, role);
+        return !usedRoleIds.has(roleId(group, slotIndex))
+          && dependenciesSatisfiedByAssignedRoles(group, usedGroupKeys)
+          && eligible(participant, role);
       })
   );
 
@@ -32,24 +35,26 @@ export async function assignLateRole(kv, participant) {
 }
 
 function pickGroups(targetSize) {
-  const groups = shuffle(ROLE_GROUPS);
-  const selected = [];
-  let remaining = targetSize;
+  for (let attempt = 0; attempt < 200; attempt += 1) {
+    const groups = shuffle(ROLE_GROUPS);
+    const selected = [];
+    let remaining = targetSize;
 
-  for (const group of groups) {
-    const size = group.slots.length;
-    if (size <= remaining) {
-      selected.push(group);
-      remaining -= size;
+    for (const group of groups) {
+      const size = group.slots.length;
+      if (size <= remaining) {
+        selected.push(group);
+        remaining -= size;
+      }
+      if (remaining === 0) break;
     }
-    if (remaining === 0) break;
+
+    if (remaining === 0 && dependenciesSatisfied(selected)) {
+      return selected.sort((a, b) => difficulty(b) - difficulty(a));
+    }
   }
 
-  if (remaining !== 0) {
-    throw new Error("Not enough role slots for the number of registered agents.");
-  }
-
-  return selected.sort((a, b) => difficulty(b) - difficulty(a));
+  throw new Error("Not enough compatible role slots for the number of registered agents.");
 }
 
 function backtrackAssign(participants, groups) {
@@ -106,6 +111,7 @@ function candidatePairs(participants, group, used) {
 
 function eligible(person, role) {
   const tags = new Set(role.tags || []);
+  if (tags.has("romance") && !person.romanceOk) return false;
   if (tags.has("performance") && !person.performanceOk) return false;
   if (tags.has("camera") && !person.cameraOk) return false;
   if (tags.has("music") && !person.musicOk) return false;
@@ -159,6 +165,25 @@ export async function getUsedRoleIds(kv) {
   return usedRoleIds;
 }
 
+async function getUsedGroupKeys(kv) {
+  const usedGroupKeys = new Set();
+  let cursor;
+
+  do {
+    const page = await kv.list({ prefix: "assignment:", cursor });
+    for (const key of page.keys) {
+      const raw = await kv.get(key.name);
+      if (!raw) continue;
+      const assignment = JSON.parse(raw);
+      const groupKeys = assignment.groupKey ? [assignment.groupKey] : inferGroupKeys(assignment);
+      for (const groupKey of groupKeys) usedGroupKeys.add(groupKey);
+    }
+    cursor = page.list_complete ? undefined : page.cursor;
+  } while (cursor);
+
+  return usedGroupKeys;
+}
+
 function inferRoleIds(assignment) {
   const ids = [];
   for (const group of ROLE_GROUPS) {
@@ -169,6 +194,23 @@ function inferRoleIds(assignment) {
     });
   }
   return ids;
+}
+
+function inferGroupKeys(assignment) {
+  return [...new Set(inferRoleIds(assignment).map((id) => id.split(":")[0]))];
+}
+
+function dependenciesSatisfied(groups) {
+  const selectedKeys = new Set(groups.map((group) => group.key));
+  return groups.every((group) => {
+    if (!group.requiresAnyGroupKey?.length) return true;
+    return group.requiresAnyGroupKey.some((key) => selectedKeys.has(key));
+  });
+}
+
+function dependenciesSatisfiedByAssignedRoles(group, usedGroupKeys) {
+  if (!group.requiresAnyGroupKey?.length) return true;
+  return group.requiresAnyGroupKey.some((key) => usedGroupKeys.has(key));
 }
 
 function difficulty(group) {

@@ -40,11 +40,15 @@
             <legend>Role clearance</legend>
             <label class="check">
               <input name="hasPartner" type="checkbox" id="hasPartner">
-              <span>I am in a relationship</span>
+              <span>Are you attending with a romantic partner?</span>
             </label>
             <label class="conditional-field" id="partnerNameField" hidden>
-              Partner's name, if they will be at the party
-              <input name="partnerName" type="text" maxlength="80" placeholder="Optional: only if they will be at the party" disabled>
+              What is their name?
+              <input name="partnerName" type="text" maxlength="80" placeholder="Optional: name they will sign up with" disabled>
+            </label>
+            <label class="check">
+              <input name="romanceOk" type="checkbox">
+              <span>Are you okay with romantic/fake couple roles?</span>
             </label>
             <label class="check">
               <input name="performanceOk" type="checkbox" checked>
