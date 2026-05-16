@@ -51,6 +51,7 @@ function buildGroups(rows) {
         identity: slotIdentities[index] || cell(row.undercover_identity),
         mission: cell(row.mission),
         bonus: cell(row.bonus),
+        outfit: cell(row.outfit),
         tags
       });
     }

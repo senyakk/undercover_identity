@@ -287,6 +287,12 @@ button:disabled {
   margin: 0;
 }
 
+.result .hint {
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
 .roster-list {
   display: grid;
   gap: 8px;

@@ -118,10 +118,23 @@ function assignmentHtml(assignment) {
         <dt>Undercover persona</dt>
         <dd>${escapeHtml(assignment.identity)}</dd>
       </div>
+      ${assignment.partnerRole ? `
+        <div>
+          <dt>Counterpart to find</dt>
+          <dd>${escapeHtml(assignment.partnerRole)}</dd>
+          <dd class="hint">Their name is classified. Find out who they are at the party.</dd>
+        </div>
+      ` : ""}
       <div>
         <dt>Mission</dt>
         <dd>${escapeHtml(assignment.mission)}</dd>
       </div>
+      ${assignment.outfit ? `
+        <div>
+          <dt>Suggested disguise</dt>
+          <dd>${escapeHtml(assignment.outfit)}</dd>
+        </div>
+      ` : ""}
       <div>
         <dt>Bonus objective</dt>
         <dd>${escapeHtml(assignment.bonus)}</dd>

@@ -7,8 +7,9 @@ export const ROLE_GROUPS = [
       {
         "title": "The Journalist",
         "identity": "Nosy party reporter",
-        "mission": "Collect one fun fact from as many people as possible.",
+        "mission": "Collect suspicious fun facts from party guests.",
         "bonus": "Present breaking news later.",
+        "outfit": "Notebook, pen, press badge, practical jacket.",
         "tags": [
           "performance"
         ]
@@ -22,8 +23,9 @@ export const ROLE_GROUPS = [
       {
         "title": "The Party Photographer",
         "identity": "Event photographer",
-        "mission": "Take photos of everyone at least once.",
-        "bonus": "Capture three suspicious evidence shots.",
+        "mission": "Take photos like you are documenting a major cultural event.",
+        "bonus": "Capture suspicious evidence shots.",
+        "outfit": "Camera or phone ready, all black, event-crew energy.",
         "tags": [
           "camera"
         ]
@@ -39,6 +41,7 @@ export const ROLE_GROUPS = [
         "identity": "Suspiciously helpful drink expert",
         "mission": "Open bottles, pour shots, or offer drink service without making it too obvious.",
         "bonus": "Invent a signature drink name.",
+        "outfit": "Apron, towel over shoulder, bottle opener, confident service face.",
         "tags": [
           "alcohol"
         ]
@@ -52,8 +55,9 @@ export const ROLE_GROUPS = [
       {
         "title": "The DJ",
         "identity": "Music operative",
-        "mission": "Successfully change the music genre at least 3 times during the party.",
-        "bonus": "Get one person to publicly endorse your music taste.",
+        "mission": "Successfully change the music vibe during the party.",
+        "bonus": "Get someone to publicly endorse your music taste.",
+        "outfit": "Sunglasses, headphones, dark shirt, unnecessary confidence.",
         "tags": [
           "music"
         ]
@@ -67,8 +71,9 @@ export const ROLE_GROUPS = [
       {
         "title": "The Food Critic",
         "identity": "Serious culinary reviewer",
-        "mission": "Review every snack and drink with unnecessary intensity.",
-        "bonus": "Give one item a devastating score.",
+        "mission": "Review snacks and drinks with unnecessary intensity.",
+        "bonus": "Give something a devastating score.",
+        "outfit": "Smart casual, tiny notebook, judgemental restaurant-review posture.",
         "tags": [
           "performance",
           "alcohol"
@@ -84,7 +89,8 @@ export const ROLE_GROUPS = [
         "title": "Handler",
         "identity": "Mission coordinator",
         "mission": "Give small missions to other people without them realizing you are controlling the game.",
-        "bonus": "Get three people to complete your side quests.",
+        "bonus": "Get people to complete your side quests.",
+        "outfit": "Plain clothes, earpiece vibe, clipboard or notes app.",
         "tags": [
           "performance"
         ]
@@ -100,6 +106,7 @@ export const ROLE_GROUPS = [
         "identity": "Fake activist",
         "mission": "Convince people to sign a petition for a fake charity or cause.",
         "bonus": "Create a slogan for your charity.",
+        "outfit": "Wholesome shirt, handmade badge, clipboard, sincere smile.",
         "tags": [
           "performance"
         ]
@@ -114,7 +121,8 @@ export const ROLE_GROUPS = [
         "title": "The Psychic",
         "identity": "Mystical consultant",
         "mission": "Give tarot, or fake psychic readings to party guests.",
-        "bonus": "Correctly predict one very obvious event.",
+        "bonus": "Correctly predict something extremely obvious.",
+        "outfit": "Flowy layers, rings, scarf, mysterious object or cards.",
         "tags": [
           "performance"
         ]
@@ -129,7 +137,8 @@ export const ROLE_GROUPS = [
         "title": "The Bride",
         "identity": "Runaway bride",
         "mission": "Arrive in a white dress (or shirt) and makeshift veil. Act like this party is somehow your wedding to {{partner}}.",
-        "bonus": "Recruit at least two guests into your bridal party.",
+        "bonus": "Recruit guests into your bridal party.",
+        "outfit": "White outfit or shirt, improvised veil, dramatic bouquet substitute.",
         "tags": [
           "romance",
           "performance"
@@ -140,6 +149,7 @@ export const ROLE_GROUPS = [
         "identity": "Dramatic fiance",
         "mission": "Dramatically present a toy/candy ring to {{partner}} in front of a group of people.",
         "bonus": "Deliver a speech that sounds too emotional for the situation.",
+        "outfit": "Button-up shirt, fake ring, nervous formal occasion energy.",
         "tags": [
           "romance",
           "performance"
@@ -155,8 +165,9 @@ export const ROLE_GROUPS = [
       {
         "title": "Celebrity Bodyguard",
         "identity": "Overprotective security",
-        "mission": "Pick one person and protect them dramatically for the night.",
+        "mission": "Pick someone and protect them dramatically for the night.",
         "bonus": "Ask someone to step back from your celebrity.",
+        "outfit": "Black shirt, sunglasses, serious stance, security earpiece energy.",
         "tags": [
           "performance"
         ]
@@ -172,6 +183,7 @@ export const ROLE_GROUPS = [
         "identity": "Romance/friendship broker",
         "mission": "Create new friendships or couples and collect fake testimonials for your service.",
         "bonus": "Offer a money-back guarantee.",
+        "outfit": "Polished outfit, notebook, business-card energy, warm smile.",
         "tags": [
           "romance",
           "performance"
@@ -188,6 +200,7 @@ export const ROLE_GROUPS = [
         "identity": "Washed-up celebrity",
         "mission": "Convince people you are famous, or used to be famous \"back in the day.\"",
         "bonus": "Reference your imaginary tour.",
+        "outfit": "Leather jacket, sunglasses, band tee, fading-star confidence.",
         "tags": [
           "performance"
         ]
@@ -203,6 +216,7 @@ export const ROLE_GROUPS = [
         "identity": "Wildlife documentarian",
         "mission": "Film short videos of the party while narrating people like animals in nature.",
         "bonus": "Narrate a feeding or mating ritual.",
+        "outfit": "Neutral explorer colors, hat if available, documentary narrator calm.",
         "tags": [
           "camera",
           "performance"
@@ -219,6 +233,7 @@ export const ROLE_GROUPS = [
         "identity": "Bad illusionist",
         "mission": "Perform magic tricks. If they fail, insist the audience just \"didn't understand the technique.\"",
         "bonus": "Say \"watch closely\" before something deeply unimpressive.",
+        "outfit": "Dark jacket, deck of cards, suspiciously theatrical hands.",
         "tags": [
           "performance"
         ]
@@ -234,6 +249,7 @@ export const ROLE_GROUPS = [
         "identity": "Park sketch artist",
         "mission": "Bring a sketchbook and draw people, scenes, or \"suspect profiles.\"",
         "bonus": "Make one sketch look unnecessarily dramatic.",
+        "outfit": "Beret optional, sketchbook, pencil, paint-splattered or artsy layers.",
         "tags": []
       }
     ]
@@ -247,6 +263,7 @@ export const ROLE_GROUPS = [
         "identity": "Nostalgic park dad",
         "mission": "Always be holding a beer and keep reminiscing about 2010.",
         "bonus": "Tell someone things were simpler then.",
+        "outfit": "Polo or old hoodie, cargo shorts, tired-but-wise dad energy.",
         "tags": [
           "performance",
           "alcohol"
@@ -263,6 +280,7 @@ export const ROLE_GROUPS = [
         "identity": "Fitness influencer",
         "mission": "Use random park/party objects as exercise equipment and flex whenever possible.",
         "bonus": "Invite someone to spot you.",
+        "outfit": "Tank top or athletic wear, water bottle, gym towel.",
         "tags": [
           "performance"
         ]
@@ -278,6 +296,7 @@ export const ROLE_GROUPS = [
         "identity": "Aura specialist",
         "mission": "Assign people aura colors and recommend stones/crystals to heal them.",
         "bonus": "Declare one aura deeply complicated.",
+        "outfit": "Earthy layers, beads, scarf, crystals or meaningful-looking stones.",
         "tags": [
           "performance"
         ]
@@ -293,6 +312,7 @@ export const ROLE_GROUPS = [
         "identity": "Birth chart detective",
         "mission": "Guess people's star signs and do Google-assisted chart readings.",
         "bonus": "Blame one social interaction on Mercury.",
+        "outfit": "Celestial colors, shiny accessory, phone ready for birth charts.",
         "tags": [
           "performance"
         ]
@@ -308,6 +328,7 @@ export const ROLE_GROUPS = [
         "identity": "Lost tourist",
         "mission": "Take awkward selfies with random objects, people, trees, drinks, etc.",
         "bonus": "Ask someone to photograph you with something boring.",
+        "outfit": "Tourist shirt, sunglasses, cap, camera/phone, confused map energy.",
         "tags": [
           "camera",
           "performance"
@@ -322,8 +343,9 @@ export const ROLE_GROUPS = [
       {
         "title": "Fake Couple",
         "identity": "Suspicious romantic duo",
-        "mission": "Convince as many people as possible that you and {{partner}} are a real couple.",
+        "mission": "Convince people that you and {{partner}} are a real couple.",
         "bonus": "Invent a meet-cute and disagree on the details.",
+        "outfit": "Coordinated color or matching accessory if possible; couple energy.",
         "tags": [
           "romance",
           "performance"
@@ -332,8 +354,9 @@ export const ROLE_GROUPS = [
       {
         "title": "Fake Couple",
         "identity": "Suspicious romantic duo",
-        "mission": "Convince as many people as possible that you and {{partner}} are a real couple.",
+        "mission": "Convince people that you and {{partner}} are a real couple.",
         "bonus": "Invent a meet-cute and disagree on the details.",
+        "outfit": "Coordinated color or matching accessory if possible; couple energy.",
         "tags": [
           "romance",
           "performance"
@@ -351,6 +374,7 @@ export const ROLE_GROUPS = [
         "identity": "Competing mystic",
         "mission": "Disagree with the Psychic/Spiritualist/Astrologist and offer alternative predictions.",
         "bonus": "Act offended by their mystical methods.",
+        "outfit": "Different mystical aesthetic from your rival, dramatic scarf, strong opinions.",
         "tags": [
           "performance"
         ]
@@ -371,6 +395,7 @@ export const ROLE_GROUPS = [
         "identity": "Incognito rich person",
         "mission": "Drop hints that you are extremely wealthy but trying to stay humble.",
         "bonus": "Mention an imaginary asset casually.",
+        "outfit": "Quiet luxury, clean minimal outfit, watch or fake-rich detail.",
         "tags": [
           "performance"
         ]
@@ -385,7 +410,8 @@ export const ROLE_GROUPS = [
         "title": "The Influencer",
         "identity": "Influencer",
         "mission": "Film fake content, ask people to be in your vlog, and mention brand deals that do not exist.",
-        "bonus": "Ask someone to redo a moment for content.",
+        "bonus": "Ask people to redo normal moments for content.",
+        "outfit": "Trendy outfit, sunglasses, phone always ready, main-character posture.",
         "tags": [
           "camera",
           "performance"
@@ -402,6 +428,7 @@ export const ROLE_GROUPS = [
         "identity": "Therapist",
         "mission": "Ask people \"and how did that make you feel?\" during normal conversations.",
         "bonus": "Offer a completely unnecessary breakthrough.",
+        "outfit": "Calm neutral outfit, cardigan vibe, notebook, deeply concerned face.",
         "tags": [
           "performance"
         ]
@@ -417,6 +444,7 @@ export const ROLE_GROUPS = [
         "identity": "Official birthday standards inspector",
         "mission": "Inspect whether the party meets official birthday standards.",
         "bonus": "Issue a fake compliance rating.",
+        "outfit": "Official-looking shirt, clipboard, badge, inspector seriousness.",
         "tags": [
           "performance"
         ]
@@ -432,6 +460,7 @@ export const ROLE_GROUPS = [
         "identity": "Unsolicited advisor",
         "mission": "Give people dramatic advice about their \"journey\" and \"potential.\"",
         "bonus": "Tell someone they are entering a new chapter.",
+        "outfit": "Clean motivational-speaker outfit, confident posture, optional headset vibe.",
         "tags": [
           "performance"
         ]
@@ -446,7 +475,8 @@ export const ROLE_GROUPS = [
         "title": "The Fortune Cookie",
         "identity": "Fortune cookie teller",
         "mission": "Give people tiny pieces of life advice written on paper.",
-        "bonus": "Make one fortune sound weirdly specific.",
+        "bonus": "Make the fortunes sound weirdly specific.",
+        "outfit": "Pockets full of paper slips, warm mystical-but-cheap aesthetic.",
         "tags": [
           "performance"
         ]
@@ -462,6 +492,7 @@ export const ROLE_GROUPS = [
         "identity": "Improvised preacher",
         "mission": "Randomly recite possibly made up holy script verses.",
         "bonus": "Bless a normal party object.",
+        "outfit": "Formal-ish dark outfit, commanding posture, improvised holy book or notes.",
         "tags": [
           "performance"
         ]
@@ -477,6 +508,7 @@ export const ROLE_GROUPS = [
         "identity": "Talent scout",
         "mission": "Audition people for imaginary opportunities and take notes on their star potential.",
         "bonus": "Promise someone that your people will call their people.",
+        "outfit": "Smart casual, sunglasses, notes app, industry-person energy.",
         "tags": [
           "performance"
         ]
@@ -491,7 +523,8 @@ export const ROLE_GROUPS = [
         "title": "The Politician",
         "identity": "Campaigning candidate",
         "mission": "Shake hands, make promises, and ask people to vote for your fake platform.",
-        "bonus": "Make one impossible campaign promise.",
+        "bonus": "Make an impossible campaign promise.",
+        "outfit": "Button-up or blazer, campaign smile, handshake-ready hands.",
         "tags": [
           "performance"
         ]
@@ -506,7 +539,8 @@ export const ROLE_GROUPS = [
         "title": "The Florida Man",
         "identity": "Walking disaster, but always vibing",
         "mission": "Spend the evening telling increasingly absurd adventure stories and insisting they genuinely happened to you.",
-        "bonus": "Make one story sound like a newspaper headline.",
+        "bonus": "Make your stories sound like newspaper headlines.",
+        "outfit": "Loud casual outfit, sunglasses, chaotic vacation energy.",
         "tags": [
           "performance"
         ]
@@ -522,6 +556,7 @@ export const ROLE_GROUPS = [
         "identity": "Harmless movement founder",
         "mission": "Try to recruit people into a completely fake, harmless movement. Coordinate with {{partner}} if they are assigned.",
         "bonus": "Create a ritual or slogan.",
+        "outfit": "Soft neutral colors, symbol or ribbon, calm unsettling enthusiasm.",
         "tags": [
           "performance"
         ]
@@ -531,6 +566,7 @@ export const ROLE_GROUPS = [
         "identity": "Devoted first follower",
         "mission": "Enthusiastically validate everything {{partner}} says.",
         "bonus": "Start applause for the movement.",
+        "outfit": "Same color/detail as the Recruiter if possible; devoted follower energy.",
         "tags": [
           "performance"
         ]
@@ -544,8 +580,9 @@ export const ROLE_GROUPS = [
       {
         "title": "The Wolf of Wall Street",
         "identity": "Annoying finance bro",
-        "mission": "Convince as many people as you can to buy a pencil from you. Or make people try to sell a pencil to you in order to pass a test.",
+        "mission": "Convince people to buy a pencil from you. Or make people try to sell a pencil to you in order to pass a test.",
         "bonus": "Mention closing the deal.",
+        "outfit": "Shirt and tie or finance-bro vest, pen/pencil, aggressive confidence.",
         "tags": [
           "performance"
         ]
@@ -561,6 +598,7 @@ export const ROLE_GROUPS = [
         "identity": "Social catastrophe",
         "mission": "Pretend you come from a remote fictional country. Misunderstand social norms in increasingly absurd ways, and make out of pocket statements.",
         "bonus": "Keep your accent committed.",
+        "outfit": "Awkward formal shirt or mismatched tourist outfit; commit to the bit.",
         "tags": [
           "performance"
         ]
@@ -576,6 +614,7 @@ export const ROLE_GROUPS = [
         "identity": "Wine/drink expert",
         "mission": "Describe cheap drinks like they are luxury wines. Give absurdly serious reviews of cheap drinks.",
         "bonus": "Discuss notes, finish, and mouthfeel.",
+        "outfit": "Smart black outfit, napkin over arm, imaginary wine expertise.",
         "tags": [
           "alcohol",
           "performance"
@@ -591,7 +630,8 @@ export const ROLE_GROUPS = [
         "title": "The Conspiracy Theorist",
         "identity": "Truth-seeker",
         "mission": "Convince people that the birthday party is a cover-up for something bigger.",
-        "bonus": "Connect three unrelated objects into one theory.",
+        "bonus": "Connect unrelated objects into one theory.",
+        "outfit": "Hoodie or overshirt, notes, red-string-board energy.",
         "tags": [
           "performance"
         ]
@@ -606,7 +646,8 @@ export const ROLE_GROUPS = [
         "title": "The Philosopher",
         "identity": "Deep thinker",
         "mission": "Turn normal conversations into existential debates.",
-        "bonus": "Ask someone what joy really means.",
+        "bonus": "Ask people what joy really means.",
+        "outfit": "Black turtleneck or thoughtful layers, distant stare, optional notebook.",
         "tags": [
           "performance"
         ]
@@ -621,7 +662,8 @@ export const ROLE_GROUPS = [
         "title": "DJ Critic",
         "identity": "Music reviewer",
         "mission": "Rate every song and loudly suggest what should come next.",
-        "bonus": "Give one song a devastating review.",
+        "bonus": "Give songs devastating reviews.",
+        "outfit": "Pretentious reviewer outfit, crossed arms, music-snob face.",
         "tags": [
           "music",
           "performance"
@@ -640,7 +682,8 @@ export const ROLE_GROUPS = [
         "title": "The Health and Safety Inspector",
         "identity": "Official party safety inspector",
         "mission": "Inspect people's drinks/snacks and give fake hygiene ratings.",
-        "bonus": "Declare one snack a controlled hazard.",
+        "bonus": "Declare normal snacks controlled hazards.",
+        "outfit": "High-vis detail or official-looking badge, clipboard, concerned eyebrows.",
         "tags": [
           "performance"
         ]
@@ -655,7 +698,8 @@ export const ROLE_GROUPS = [
         "title": "The Historian",
         "identity": "Local history expert",
         "mission": "Invent fake historical facts about the party guests.",
-        "bonus": "Refer to one guest as a historically significant figure.",
+        "bonus": "Refer to guests as historically significant figures.",
+        "outfit": "Old-school academic outfit, glasses, notebook, museum-guide seriousness.",
         "tags": [
           "performance"
         ]
@@ -670,7 +714,8 @@ export const ROLE_GROUPS = [
         "title": "The Motivational Speaker",
         "identity": "Self-help guru",
         "mission": "Give intense motivational speeches to people doing normal things. Turn every small thing into a fake LinkedIn lesson.",
-        "bonus": "End one speech with a call to action.",
+        "bonus": "End speeches with calls to action.",
+        "outfit": "Business casual, energetic posture, keynote-speaker hand gestures.",
         "tags": [
           "performance"
         ]
@@ -685,7 +730,8 @@ export const ROLE_GROUPS = [
         "title": "The Flat Earther",
         "identity": "Confidently wrong researcher",
         "mission": "Try to prove the park is flat using fake experiments, sticks, cups, shadows, and scientific diagrams.",
-        "bonus": "Recruit one assistant researcher.",
+        "bonus": "Recruit an assistant researcher.",
+        "outfit": "Researcher casual, measuring props, notebook with fake diagrams.",
         "tags": [
           "performance"
         ]
@@ -700,7 +746,8 @@ export const ROLE_GROUPS = [
         "title": "The Medieval Plague Doctor",
         "identity": "Suspicious health professional",
         "mission": "Diagnose people with fake obscure conditions based on their behavior. Recommend herbs or blood transfusion.",
-        "bonus": "Give one condition a Latin-sounding name.",
+        "bonus": "Give conditions Latin-sounding names.",
+        "outfit": "Dark layers, scarf or mask if comfortable, herb pouch energy.",
         "tags": [
           "performance"
         ]
@@ -716,6 +763,7 @@ export const ROLE_GROUPS = [
         "identity": "Totally fine ex-spouse",
         "mission": "Convince people you and {{partner}} used to be married and are totally fine now. Occasionally argue over imaginary property.",
         "bonus": "Reference one fictional shared asset.",
+        "outfit": "Slightly too formal for a park, bitter reunion energy.",
         "tags": [
           "romance",
           "performance"
@@ -726,6 +774,7 @@ export const ROLE_GROUPS = [
         "identity": "Totally fine ex-spouse",
         "mission": "Convince people you and {{partner}} used to be married and are totally fine now. Occasionally argue over imaginary property.",
         "bonus": "Reference one fictional shared asset.",
+        "outfit": "Slightly too formal for a park, bitter reunion energy.",
         "tags": [
           "romance",
           "performance"
@@ -743,6 +792,7 @@ export const ROLE_GROUPS = [
         "identity": "Restless Spirit",
         "mission": "Communicate dramatically, vaguely, or through gestures while {{partner}} translates for you.",
         "bonus": "Stage one supernatural misunderstanding.",
+        "outfit": "Pale or flowy layer, haunted expression, dramatic silence.",
         "tags": [
           "performance"
         ]
@@ -752,6 +802,7 @@ export const ROLE_GROUPS = [
         "identity": "Fake Medium",
         "mission": "Translate for {{partner}}, a restless spirit who can only communicate dramatically, vaguely, or through gestures.",
         "bonus": "Stage one supernatural misunderstanding.",
+        "outfit": "Dark mystical outfit, scarf, translator-of-the-dead confidence.",
         "tags": [
           "performance"
         ]

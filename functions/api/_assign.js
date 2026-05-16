@@ -82,8 +82,8 @@ function backtrackAssign(participants, groups) {
     for (const [first, second] of shuffle(pairs)) {
       used.add(first.id);
       used.add(second.id);
-      assignments.push(makeAssignment(first, group, 0, second.name));
-      assignments.push(makeAssignment(second, group, 1, first.name));
+      assignments.push(makeAssignment(first, group, 0, counterpartRoleLabel(group, 1)));
+      assignments.push(makeAssignment(second, group, 1, counterpartRoleLabel(group, 0)));
       if (visit(index + 1)) return true;
       assignments.pop();
       assignments.pop();
@@ -145,11 +145,19 @@ function makeAssignment(person, group, slotIndex, partnerName = "") {
     roleId: roleId(group, slotIndex),
     groupKey: group.key,
     slotIndex,
+    partnerRole: group.type === "pair" ? partner : "",
     title: role.title,
     identity: role.identity,
     mission: role.mission.replaceAll("{{partner}}", partner),
-    bonus: role.bonus.replaceAll("{{partner}}", partner)
+    bonus: role.bonus.replaceAll("{{partner}}", partner),
+    outfit: (role.outfit || "").replaceAll("{{partner}}", partner)
   };
+}
+
+function counterpartRoleLabel(group, slotIndex) {
+  const title = group.slots[slotIndex].title;
+  const duplicateTitle = group.slots.some((slot, index) => index !== slotIndex && slot.title === title);
+  return duplicateTitle ? `the other ${title}` : title;
 }
 
 function roleId(group, slotIndex) {
