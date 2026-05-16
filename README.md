@@ -47,6 +47,8 @@ Guests receive a reveal link at signup. They should save it. Before the draw, it
 
 Late guests can still sign up after the draw. They receive an unused eligible role immediately, as long as there are suitable roles left in the pool.
 
+The admin page can also discard the current draw, discard and redraw the existing roster, or discard the entire roster and all reveal links.
+
 ## Notes on secrecy
 
 The normal UI never shows the organizer the assignment list. Because this project owns the database and code, a project admin could technically inspect KV or change the code to peek. For maximum surprise, let a trusted non-player own the Cloudflare project or the `ADMIN_SECRET`.

@@ -1,0 +1,93 @@
+import {
+  DRAW_KEY,
+  INDEX_KEY,
+  getParticipantIds,
+  json,
+  readJson,
+  requireKv
+} from "./_lib.js";
+import { assignRoles } from "./_assign.js";
+
+export async function onRequestPost({ request, env }) {
+  try {
+    const kv = requireKv(env);
+    const body = await readJson(request);
+    if (!env.ADMIN_SECRET || body.adminSecret !== env.ADMIN_SECRET) {
+      return json({ error: "Unauthorized Mission Control secret." }, 401);
+    }
+
+    if (body.action === "clearRoster") {
+      const deleted = await clearRoster(kv);
+      return json({ action: "clearRoster", ...deleted });
+    }
+
+    if (body.action === "clearDraw") {
+      const assignmentCount = await clearDraw(kv);
+      const ids = await getParticipantIds(kv);
+      return json({ action: "clearDraw", assignmentCount, participantCount: ids.length });
+    }
+
+    if (body.action === "redraw") {
+      const result = await redraw(kv);
+      return json({ action: "redraw", ...result });
+    }
+
+    return json({ error: "Unknown reset action." }, 400);
+  } catch (error) {
+    return json({ error: error.message || "Reset failed" }, 500);
+  }
+}
+
+async function clearRoster(kv) {
+  const participantCount = await deleteByPrefix(kv, "participant:");
+  const revealCount = await deleteByPrefix(kv, "reveal:");
+  const assignmentCount = await clearDraw(kv);
+  await kv.delete(INDEX_KEY);
+
+  return { participantCount, revealCount, assignmentCount };
+}
+
+async function redraw(kv) {
+  const ids = await getParticipantIds(kv);
+  if (!ids.length) {
+    throw new Error("No agents registered yet.");
+  }
+
+  const participants = [];
+  for (const id of ids) {
+    const raw = await kv.get(`participant:${id}`);
+    if (raw) participants.push(JSON.parse(raw));
+  }
+
+  const assignments = assignRoles(participants);
+  const assignedAt = new Date().toISOString();
+  await clearDraw(kv);
+  for (const assignment of assignments) {
+    await kv.put(`assignment:${assignment.participantId}`, JSON.stringify({ ...assignment, assignedAt }));
+  }
+  await kv.put(DRAW_KEY, JSON.stringify({ assignedAt, participantCount: participants.length }));
+
+  return { participantCount: participants.length };
+}
+
+async function clearDraw(kv) {
+  const assignmentCount = await deleteByPrefix(kv, "assignment:");
+  await kv.delete(DRAW_KEY);
+  return assignmentCount;
+}
+
+async function deleteByPrefix(kv, prefix) {
+  let deleted = 0;
+  let cursor;
+
+  do {
+    const page = await kv.list({ prefix, cursor });
+    for (const key of page.keys) {
+      await kv.delete(key.name);
+      deleted += 1;
+    }
+    cursor = page.list_complete ? undefined : page.cursor;
+  } while (cursor);
+
+  return deleted;
+}

@@ -219,6 +219,17 @@ button:disabled {
   color: var(--ink);
 }
 
+.button-stack {
+  display: grid;
+  gap: 10px;
+  margin: 12px 0 16px;
+}
+
+.danger {
+  background: var(--red);
+  color: var(--ink);
+}
+
 .microcopy {
   margin: 12px 0 0;
   color: var(--muted);
