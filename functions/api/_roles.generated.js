@@ -25,7 +25,7 @@ export const ROLE_GROUPS = [
         "identity": "Event photographer",
         "mission": "Take photos like you are documenting a major cultural event.",
         "bonus": "Capture suspicious evidence shots.",
-        "outfit": "Camera or phone ready, all black, event-crew energy.",
+        "outfit": "Camera or phone ready, all black, event-crew.",
         "tags": [
           "camera"
         ]
@@ -167,7 +167,7 @@ export const ROLE_GROUPS = [
         "identity": "Overprotective security",
         "mission": "Pick someone and protect them dramatically for the night.",
         "bonus": "Ask someone to step back from your celebrity.",
-        "outfit": "Black shirt, sunglasses, serious stance, security earpiece energy.",
+        "outfit": "Black shirt, sunglasses, serious stance, security earpiece.",
         "tags": [
           "performance"
         ]
@@ -183,7 +183,7 @@ export const ROLE_GROUPS = [
         "identity": "Romance/friendship broker",
         "mission": "Create new friendships or couples and collect fake testimonials for your service.",
         "bonus": "Offer a money-back guarantee.",
-        "outfit": "Polished outfit, notebook, business-card energy, warm smile.",
+        "outfit": "Polished outfit, notebook, business-card, warm smile.",
         "tags": [
           "romance",
           "performance"
@@ -263,7 +263,7 @@ export const ROLE_GROUPS = [
         "identity": "Nostalgic park dad",
         "mission": "Always be holding a beer and keep reminiscing about 2010.",
         "bonus": "Tell someone things were simpler then.",
-        "outfit": "Polo or old hoodie, cargo shorts, tired-but-wise dad energy.",
+        "outfit": "Polo or old hoodie, cargo shorts, tired-but-wise dad.",
         "tags": [
           "performance",
           "alcohol"
@@ -328,7 +328,7 @@ export const ROLE_GROUPS = [
         "identity": "Lost tourist",
         "mission": "Take awkward selfies with random objects, people, trees, drinks, etc.",
         "bonus": "Ask someone to photograph you with something boring.",
-        "outfit": "Tourist shirt, sunglasses, cap, camera/phone, confused map energy.",
+        "outfit": "Tourist shirt, sunglasses, cap, camera/phone, confused map.",
         "tags": [
           "camera",
           "performance"
@@ -345,7 +345,7 @@ export const ROLE_GROUPS = [
         "identity": "Suspicious romantic duo",
         "mission": "Convince people that you and {{partner}} are a real couple.",
         "bonus": "Invent a meet-cute and disagree on the details.",
-        "outfit": "Coordinated color or matching accessory if possible; couple energy.",
+        "outfit": "Coordinated color or matching accessory if possible",
         "tags": [
           "romance",
           "performance"
@@ -356,7 +356,7 @@ export const ROLE_GROUPS = [
         "identity": "Suspicious romantic duo",
         "mission": "Convince people that you and {{partner}} are a real couple.",
         "bonus": "Invent a meet-cute and disagree on the details.",
-        "outfit": "Coordinated color or matching accessory if possible; couple energy.",
+        "outfit": "Coordinated color or matching accessory if possible",
         "tags": [
           "romance",
           "performance"
@@ -747,7 +747,7 @@ export const ROLE_GROUPS = [
         "identity": "Suspicious health professional",
         "mission": "Diagnose people with fake obscure conditions based on their behavior. Recommend herbs or blood transfusion.",
         "bonus": "Give conditions Latin-sounding names.",
-        "outfit": "Dark layers, scarf or mask if comfortable, herb pouch energy.",
+        "outfit": "Dark layers, scarf or mask if comfortable, herb pouch.",
         "tags": [
           "performance"
         ]
