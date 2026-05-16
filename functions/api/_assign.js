@@ -102,6 +102,7 @@ function candidatePairs(participants, group, used) {
     if (used.has(first.id) || !eligible(first, group.slots[0])) continue;
     for (const second of participants) {
       if (first.id === second.id || used.has(second.id) || !eligible(second, group.slots[1])) continue;
+      if (!attendanceOverlaps(first, second)) continue;
       if (group.notRealPartners && areRealPartners(first, second)) continue;
       pairs.push([first, second]);
     }
@@ -122,6 +123,18 @@ function areRealPartners(first, second) {
   const firstName = normalize(first.name);
   const secondName = normalize(second.name);
   return (firstPartner && firstPartner === secondName) || (secondPartner && secondPartner === firstName);
+}
+
+function attendanceOverlaps(first, second) {
+  const firstParts = attendanceParts(first.attendance);
+  const secondParts = attendanceParts(second.attendance);
+  return firstParts.some((part) => secondParts.includes(part));
+}
+
+function attendanceParts(attendance = "both") {
+  if (attendance === "barbecue") return ["barbecue"];
+  if (attendance === "afterparty") return ["afterparty"];
+  return ["barbecue", "afterparty"];
 }
 
 function makeAssignment(person, group, slotIndex, partnerName = "") {

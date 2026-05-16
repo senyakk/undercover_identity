@@ -27,10 +27,12 @@ export async function onRequestPost({ request, env }) {
     const token = makeToken();
     const tokenHash = await sha256(token);
     const partnerName = String(body.partnerName || "").trim().slice(0, 80);
+    const attendance = normalizeAttendance(body.attendance);
 
     const participant = {
       id,
       name: name.slice(0, 80),
+      attendance,
       hasPartner: Boolean(partnerName),
       partnerName,
       partnerKey: normalize(partnerName),
@@ -57,4 +59,11 @@ export async function onRequestPost({ request, env }) {
   } catch (error) {
     return json({ error: error.message || "Signup failed" }, 500);
   }
+}
+
+function normalizeAttendance(value) {
+  if (["barbecue", "afterparty", "both"].includes(value)) {
+    return value;
+  }
+  return "both";
 }

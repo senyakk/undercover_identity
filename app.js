@@ -32,6 +32,7 @@ signupForm.addEventListener("submit", async (event) => {
     const partnerName = String(form.get("partnerName") || "").trim();
     const payload = {
       name: form.get("name"),
+      attendance: form.get("attendance"),
       partnerName,
       romanceOk: form.has("romanceOk"),
       musicOk: form.has("musicOk")
