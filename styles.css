@@ -365,6 +365,10 @@ button:disabled {
   padding: 6px;
 }
 
+.gallery-grid img.cutout {
+  background: transparent;
+}
+
 .gallery-grid figcaption {
   display: grid;
   gap: 5px;
