@@ -5,6 +5,8 @@ pages_build_output_dir = "."
 [[kv_namespaces]]
 binding = "SPY_PARTY_KV"
 id = "14065848e7eb4ba89cdf1ba3c77462c0"
+preview_id = "14065848e7eb4ba89cdf1ba3c77462c0"
+
 
 [vars]
 ADMIN_SECRET = "game_begin"
