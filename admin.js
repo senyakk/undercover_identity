@@ -205,7 +205,7 @@ function rosterHtml(data) {
       <div><strong>${data.participantCount}</strong><span>Total</span></div>
       <div><strong>${summary.romanceOkCount || 0}</strong><span>Couple roles OK</span></div>
       <div><strong>${summary.partnerCount || 0}</strong><span>Partner named</span></div>
-      <div><strong>${summary.musicOkCount || 0}</strong><span>Music roles OK</span></div>
+      <div><strong>${summary.musicOkCount || 0}</strong><span>Speaker roles OK</span></div>
       <div><strong>${summary.cameraOkCount || 0}</strong><span>Photo/video OK</span></div>
       <div><strong>${summary.foodDrinkOkCount || 0}</strong><span>Food/drink OK</span></div>
       <div><strong>${summary.bothCount || 0}</strong><span>Both parts</span></div>
@@ -220,7 +220,7 @@ function rosterHtml(data) {
             <th>Attendance</th>
             <th>Couple roles</th>
             <th>Partner</th>
-            <th>Music roles</th>
+            <th>Speaker roles</th>
             <th>Photo/video</th>
             <th>Food/drink</th>
           </tr>
