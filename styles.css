@@ -159,6 +159,10 @@ fieldset {
   font-weight: 700;
 }
 
+[hidden] {
+  display: none !important;
+}
+
 fieldset {
   padding: 14px;
   border: 1px solid var(--line);
@@ -332,7 +336,7 @@ button:disabled {
 
 .roster-table {
   width: 100%;
-  min-width: 640px;
+  min-width: 820px;
   border-collapse: collapse;
   font-size: 0.9rem;
 }

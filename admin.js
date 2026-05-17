@@ -206,6 +206,8 @@ function rosterHtml(data) {
       <div><strong>${summary.romanceOkCount || 0}</strong><span>Couple roles OK</span></div>
       <div><strong>${summary.partnerCount || 0}</strong><span>Partner named</span></div>
       <div><strong>${summary.musicOkCount || 0}</strong><span>Music roles OK</span></div>
+      <div><strong>${summary.cameraOkCount || 0}</strong><span>Photo/video OK</span></div>
+      <div><strong>${summary.foodDrinkOkCount || 0}</strong><span>Food/drink OK</span></div>
       <div><strong>${summary.bothCount || 0}</strong><span>Both parts</span></div>
       <div><strong>${summary.barbecueOnlyCount || 0}</strong><span>BBQ only</span></div>
       <div><strong>${summary.afterpartyOnlyCount || 0}</strong><span>Afterparty only</span></div>
@@ -219,6 +221,8 @@ function rosterHtml(data) {
             <th>Couple roles</th>
             <th>Partner</th>
             <th>Music roles</th>
+            <th>Photo/video</th>
+            <th>Food/drink</th>
           </tr>
         </thead>
         <tbody>
@@ -229,6 +233,8 @@ function rosterHtml(data) {
               <td>${agent.romanceOk ? "Yes" : "No"}</td>
               <td>${agent.partnerName ? escapeHtml(agent.partnerName) : "No"}</td>
               <td>${agent.musicOk ? "Yes" : "No"}</td>
+              <td>${agent.cameraOk ? "Yes" : "No"}</td>
+              <td>${agent.foodDrinkOk ? "Yes" : "No"}</td>
             </tr>
           `).join("")}
         </tbody>

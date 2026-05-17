@@ -26,7 +26,9 @@ export async function onRequestPost({ request, env }) {
         attendance: normalizeAttendanceLabel(participant.attendance),
         partnerName: String(participant.partnerName || "").trim(),
         romanceOk: Boolean(participant.romanceOk),
-        musicOk: Boolean(participant.musicOk)
+        musicOk: Boolean(participant.musicOk),
+        cameraOk: participant.cameraOk !== false,
+        foodDrinkOk: participant.foodDrinkOk !== false
       });
     }
 
@@ -37,6 +39,8 @@ export async function onRequestPost({ request, env }) {
         partnerCount: agents.filter((agent) => agent.partnerName).length,
         romanceOkCount: agents.filter((agent) => agent.romanceOk).length,
         musicOkCount: agents.filter((agent) => agent.musicOk).length,
+        cameraOkCount: agents.filter((agent) => agent.cameraOk).length,
+        foodDrinkOkCount: agents.filter((agent) => agent.foodDrinkOk).length,
         barbecueOnlyCount: agents.filter((agent) => agent.attendance === "Barbecue only").length,
         afterpartyOnlyCount: agents.filter((agent) => agent.attendance === "Afterparty only").length,
         bothCount: agents.filter((agent) => agent.attendance === "Barbecue + afterparty").length

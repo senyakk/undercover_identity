@@ -76,7 +76,8 @@ export const ROLE_GROUPS = [
         "outfit": "Smart casual, tiny notebook, judgemental restaurant-review posture.",
         "tags": [
           "performance",
-          "alcohol"
+          "alcohol",
+          "food"
         ]
       }
     ]
@@ -685,7 +686,8 @@ export const ROLE_GROUPS = [
         "bonus": "Declare normal snacks controlled hazards.",
         "outfit": "High-vis detail or official-looking badge, clipboard, concerned eyebrows.",
         "tags": [
-          "performance"
+          "performance",
+          "food"
         ]
       }
     ]

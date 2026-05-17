@@ -114,6 +114,8 @@ function eligible(person, role) {
   const tags = new Set(role.tags || []);
   if (tags.has("romance") && !person.romanceOk) return false;
   if (tags.has("music") && !person.musicOk) return false;
+  if (tags.has("camera") && person.cameraOk === false) return false;
+  if ((tags.has("alcohol") || tags.has("food")) && person.foodDrinkOk === false) return false;
   return true;
 }
 
