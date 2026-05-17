@@ -62,7 +62,7 @@ rosterButton.addEventListener("click", async () => {
     resultBox.className = "result";
     resultBox.innerHTML = `
       <h3>Registered agents</h3>
-      ${data.names.length ? `<ol class="roster-list">${data.names.map((name) => `<li>${escapeHtml(name)}</li>`).join("")}</ol>` : "<p>No agents registered yet.</p>"}
+      ${data.agents?.length ? rosterHtml(data) : "<p>No agents registered yet.</p>"}
     `;
     await refreshState();
   } catch (error) {
@@ -196,6 +196,45 @@ function escapeHtml(value) {
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
+}
+
+function rosterHtml(data) {
+  const summary = data.summary || {};
+  return `
+    <div class="stat-grid">
+      <div><strong>${data.participantCount}</strong><span>Total</span></div>
+      <div><strong>${summary.romanceOkCount || 0}</strong><span>Couple roles OK</span></div>
+      <div><strong>${summary.partnerCount || 0}</strong><span>Partner named</span></div>
+      <div><strong>${summary.musicOkCount || 0}</strong><span>Music roles OK</span></div>
+      <div><strong>${summary.bothCount || 0}</strong><span>Both parts</span></div>
+      <div><strong>${summary.barbecueOnlyCount || 0}</strong><span>BBQ only</span></div>
+      <div><strong>${summary.afterpartyOnlyCount || 0}</strong><span>Afterparty only</span></div>
+    </div>
+    <div class="table-wrap">
+      <table class="roster-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Attendance</th>
+            <th>Couple roles</th>
+            <th>Partner</th>
+            <th>Music roles</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${data.agents.map((agent) => `
+            <tr>
+              <td>${escapeHtml(agent.name)}</td>
+              <td>${escapeHtml(agent.attendance)}</td>
+              <td>${agent.romanceOk ? "Yes" : "No"}</td>
+              <td>${agent.partnerName ? escapeHtml(agent.partnerName) : "No"}</td>
+              <td>${agent.musicOk ? "Yes" : "No"}</td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    </div>
+  `;
 }
 
 async function runResetAction({ action, button, workingLabel, successTitle, successMessage, extraData = {} }) {
