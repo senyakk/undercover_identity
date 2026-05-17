@@ -255,6 +255,14 @@ button:disabled {
   font-size: 0.9rem;
 }
 
+.field-note {
+  margin: 0 0 4px;
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 500;
+  line-height: 1.45;
+}
+
 .result {
   min-height: 180px;
   border: 1px dashed var(--line);
