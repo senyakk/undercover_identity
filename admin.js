@@ -46,31 +46,72 @@ rosterButton.addEventListener("click", async () => {
   if (!drawForm.reportValidity()) return;
 
   const originalLabel = rosterButton.textContent;
-  const form = new FormData(drawForm);
   rosterButton.disabled = true;
   rosterButton.textContent = "Loading...";
 
   try {
-    const response = await fetch("/api/roster", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ adminSecret: form.get("adminSecret") })
-    });
-    const data = await response.json();
-    if (!response.ok) throw new Error(data.error || "Roster unavailable");
-
-    resultBox.className = "result";
-    resultBox.innerHTML = `
-      <h3>Registered agents</h3>
-      ${data.agents?.length ? rosterHtml(data) : "<p>No agents registered yet.</p>"}
-    `;
-    await refreshState();
+    await showRoster();
   } catch (error) {
     resultBox.className = "result";
     resultBox.textContent = error.message;
   } finally {
     rosterButton.disabled = false;
     rosterButton.textContent = originalLabel;
+  }
+});
+
+async function showRoster(message = "") {
+  const form = new FormData(drawForm);
+  const response = await fetch("/api/roster", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ adminSecret: form.get("adminSecret") })
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.error || "Roster unavailable");
+
+  resultBox.className = "result";
+  resultBox.innerHTML = `
+    <h3>Registered agents</h3>
+    ${message ? `<p class="microcopy">${escapeHtml(message)}</p>` : ""}
+    ${data.agents?.length ? rosterHtml(data) : "<p>No agents registered yet.</p>"}
+  `;
+  await refreshState();
+}
+
+resultBox.addEventListener("click", async (event) => {
+  const button = event.target.closest("[data-remove-agent-id]");
+  if (!button) return;
+  if (!drawForm.reportValidity()) return;
+
+  const name = button.dataset.removeAgentName || "this agent";
+  if (!confirm(`Remove "${name}" from the roster and delete their reveal link?`)) return;
+
+  const originalLabel = button.textContent;
+  const form = new FormData(drawForm);
+  button.disabled = true;
+  button.textContent = "Removing...";
+
+  try {
+    const response = await fetch("/api/reset", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        adminSecret: form.get("adminSecret"),
+        action: "removeParticipantById",
+        participantId: button.dataset.removeAgentId
+      })
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || "Remove failed");
+
+    await showRoster(`${data.removedName} was removed. ${data.participantCount} agents remain.`);
+  } catch (error) {
+    resultBox.className = "result";
+    resultBox.textContent = error.message;
+  } finally {
+    button.disabled = false;
+    button.textContent = originalLabel;
   }
 });
 
@@ -198,6 +239,10 @@ function escapeHtml(value) {
     .replaceAll("'", "&#039;");
 }
 
+function escapeAttribute(value) {
+  return escapeHtml(value).replaceAll("`", "&#096;");
+}
+
 function rosterHtml(data) {
   const summary = data.summary || {};
   return `
@@ -223,6 +268,7 @@ function rosterHtml(data) {
             <th>Speaker roles</th>
             <th>Photo/video</th>
             <th>Food/drink</th>
+            <th>Remove</th>
           </tr>
         </thead>
         <tbody>
@@ -235,6 +281,14 @@ function rosterHtml(data) {
               <td>${agent.musicOk ? "Yes" : "No"}</td>
               <td>${agent.cameraOk ? "Yes" : "No"}</td>
               <td>${agent.foodDrinkOk ? "Yes" : "No"}</td>
+              <td>
+                <button
+                  type="button"
+                  class="table-action danger"
+                  data-remove-agent-id="${escapeAttribute(agent.id)}"
+                  data-remove-agent-name="${escapeAttribute(agent.name)}"
+                >Remove</button>
+              </td>
             </tr>
           `).join("")}
         </tbody>

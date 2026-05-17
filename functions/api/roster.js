@@ -22,6 +22,7 @@ export async function onRequestPost({ request, env }) {
       const name = String(participant.name || "").trim();
       if (!name) continue;
       agents.push({
+        id: participant.id,
         name,
         attendance: normalizeAttendanceLabel(participant.attendance),
         partnerName: String(participant.partnerName || "").trim(),

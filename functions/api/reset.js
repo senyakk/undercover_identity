@@ -28,6 +28,11 @@ export async function onRequestPost({ request, env }) {
       return json({ action: "removeParticipant", ...result });
     }
 
+    if (body.action === "removeParticipantById") {
+      const result = await removeParticipantById(kv, body.participantId);
+      return json({ action: "removeParticipantById", ...result });
+    }
+
     if (body.action === "clearDraw") {
       const assignmentCount = await clearDraw(kv);
       const ids = await getParticipantIds(kv);
@@ -71,6 +76,25 @@ async function removeParticipantByName(kv, name) {
   }
 
   const participant = matches[0];
+  return deleteParticipant(kv, participant);
+}
+
+async function removeParticipantById(kv, participantId) {
+  const id = String(participantId || "").trim();
+  if (!id) {
+    throw new Error("Missing participant ID to remove.");
+  }
+
+  const raw = await kv.get(`participant:${id}`);
+  if (!raw) {
+    throw new Error("That registered agent was not found.");
+  }
+
+  return deleteParticipant(kv, JSON.parse(raw));
+}
+
+async function deleteParticipant(kv, participant) {
+  const ids = await getParticipantIds(kv);
   const remainingIds = ids.filter((id) => id !== participant.id);
   await kv.delete(`participant:${participant.id}`);
   await kv.delete(`assignment:${participant.id}`);
