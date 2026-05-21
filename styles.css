@@ -340,10 +340,8 @@ button:disabled {
   line-height: 1.5;
 }
 
-.dossier-footer {
-  margin: 12px 0 0;
-  color: var(--muted);
-  font-size: 0.86rem;
+.objective-block .objective-bonus {
+  margin-top: 8px;
 }
 
 .roster-list {

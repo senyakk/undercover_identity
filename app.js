@@ -113,16 +113,14 @@ function assignmentHtml(assignment) {
     <h3>CLASSIFIED DOSSIER</h3>
     <dl>
       <div>
-        <dt>Undercover identity</dt>
+        <dt>Your undercover identity</dt>
         <dd>${escapeHtml(identityLabel(assignment))}</dd>
+        <dd class="hint">If exposed: deny everything. Then commit harder.</dd>
       </div>
       <div class="objective-block">
         <dt>Mission</dt>
         <dd>${escapeHtml(assignment.mission)}</dd>
-      </div>
-      <div class="objective-block">
-        <dt>Bonus objective</dt>
-        <dd>${escapeHtml(assignment.bonus)}</dd>
+        <dd class="objective-bonus"><strong>Bonus:</strong> ${escapeHtml(assignment.bonus)}</dd>
       </div>
       ${assignment.outfit ? `
         <div>
@@ -139,7 +137,6 @@ function assignmentHtml(assignment) {
         </div>
       ` : ""}
     </dl>
-    <p class="dossier-footer">If exposed: deny everything. Then commit harder.</p>
   `;
 }
 
