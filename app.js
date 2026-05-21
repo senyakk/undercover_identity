@@ -115,7 +115,6 @@ function assignmentHtml(assignment) {
       <div>
         <dt>Your undercover identity</dt>
         <dd>${escapeHtml(identityLabel(assignment))}</dd>
-        <dd class="hint">If exposed: deny everything. Then commit harder.</dd>
       </div>
       <div class="objective-block">
         <dt>Mission</dt>

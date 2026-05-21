@@ -42,7 +42,10 @@ function makePreviewAssignment() {
     ? Math.floor(Math.random() * group.slots.length)
     : 0;
   const role = group.slots[slotIndex];
-  const partnerRole = group.type === "pair" ? counterpartRoleLabel(group, slotIndex) : "";
+  const counterpartIndex = group.type === "pair" && group.slots.length > 1
+    ? (slotIndex + 1) % group.slots.length
+    : 0;
+  const partnerRole = group.type === "pair" ? counterpartRoleLabel(group, counterpartIndex) : "";
   const partner = partnerRole || "your assigned contact";
   const stabbingTarget = pickPreviewStabbingTarget(group);
 
