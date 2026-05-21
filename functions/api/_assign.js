@@ -216,9 +216,10 @@ function withStabbingTarget(assignment, target) {
 }
 
 function roleTargetLabel(assignment) {
-  return assignment.identity
-    ? `${assignment.title} (${assignment.identity})`
-    : assignment.title;
+  if (/\bcouple\b/i.test(assignment.title)) {
+    return `${assignment.title} (only one person needed)`;
+  }
+  return assignment.title;
 }
 
 function counterpartRoleLabel(group, slotIndex) {

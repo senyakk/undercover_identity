@@ -72,7 +72,10 @@ function pickPreviewStabbingTarget(ownGroup) {
     .flatMap((group) => group.slots);
   const pool = candidates.length ? candidates : ROLE_GROUPS.flatMap((group) => group.slots);
   const target = pool[Math.floor(Math.random() * pool.length)];
-  return target.identity ? `${target.title} (${target.identity})` : target.title;
+  if (/\bcouple\b/i.test(target.title)) {
+    return `${target.title} (only one person needed)`;
+  }
+  return target.title;
 }
 
 function counterpartRoleLabel(group, slotIndex) {
