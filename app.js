@@ -114,7 +114,7 @@ function assignmentHtml(assignment) {
     <dl>
       <div>
         <dt>Your undercover identity</dt>
-        <dd>${escapeHtml(identityLabel(assignment))}</dd>
+        <dd>${escapeHtml(assignment.identity || assignment.title)}</dd>
       </div>
       <div class="objective-block">
         <dt>Mission</dt>
@@ -156,12 +156,6 @@ function showSignupSuccess(revealUrl, revealCode, assignment = null) {
     await navigator.clipboard.writeText(revealUrl);
     document.querySelector("#copyLink").textContent = "Copied";
   });
-}
-
-function identityLabel(assignment) {
-  return assignment.identity
-    ? `${assignment.title} (${assignment.identity})`
-    : assignment.title;
 }
 
 function showMessage(message, isError = false) {

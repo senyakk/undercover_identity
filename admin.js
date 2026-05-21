@@ -365,7 +365,7 @@ function assignmentHtml(assignment) {
     <dl>
       <div>
         <dt>Your undercover identity</dt>
-        <dd>${escapeHtml(identityLabel(assignment))}</dd>
+        <dd>${escapeHtml(assignment.identity || assignment.title)}</dd>
       </div>
       <div class="objective-block">
         <dt>Mission</dt>
