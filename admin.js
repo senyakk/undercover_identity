@@ -367,16 +367,13 @@ function assignmentHtml(assignment) {
         <dt>Undercover identity</dt>
         <dd>${escapeHtml(identityLabel(assignment))}</dd>
       </div>
-      ${assignment.stabbingTarget ? `
-        <div>
-          <dt>Stabbing target</dt>
-          <dd>${escapeHtml(assignment.stabbingTarget)}</dd>
-          <dd class="hint">You are given one person to stab during the party. You only know their role. Find out their name and secretly report to the organisers.</dd>
-        </div>
-      ` : ""}
-      <div>
+      <div class="objective-block">
         <dt>Mission</dt>
         <dd>${escapeHtml(assignment.mission)}</dd>
+      </div>
+      <div class="objective-block">
+        <dt>Bonus objective</dt>
+        <dd>${escapeHtml(assignment.bonus)}</dd>
       </div>
       ${assignment.outfit ? `
         <div>
@@ -385,15 +382,15 @@ function assignmentHtml(assignment) {
           <dd class="hint">This is only a recommendation or inspiration. Wear whatever works for you.</dd>
         </div>
       ` : ""}
-      <div>
-        <dt>Bonus objective</dt>
-        <dd>${escapeHtml(assignment.bonus)}</dd>
-      </div>
-      <div>
-        <dt>If exposed</dt>
-        <dd>Deny everything. Then commit harder.</dd>
-      </div>
+      ${assignment.stabbingTarget ? `
+        <div>
+          <dt>Stabbing target</dt>
+          <dd>${escapeHtml(assignment.stabbingTarget)}</dd>
+          <dd class="hint">You are given one person to stab during the party. You only know their role. Find out their name and secretly report to the organisers.</dd>
+        </div>
+      ` : ""}
     </dl>
+    <p class="dossier-footer">If exposed: deny everything. Then commit harder.</p>
   `;
 }
 

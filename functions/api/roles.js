@@ -75,5 +75,10 @@ function pickPreviewStabbingTarget(ownGroup) {
 function counterpartRoleLabel(group, slotIndex) {
   const title = group.slots[slotIndex].title;
   const duplicateTitle = group.slots.some((slot, index) => index !== slotIndex && slot.title === title);
-  return duplicateTitle ? `the other ${title}` : title;
+  return duplicateTitle ? duplicateCounterpartLabel(title) : title;
+}
+
+function duplicateCounterpartLabel(title) {
+  if (/\bcouple\b/i.test(title)) return `the other person in your ${title.toLowerCase()}`;
+  return `the other person with your ${title} role`;
 }
