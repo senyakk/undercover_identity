@@ -28,9 +28,52 @@ export async function onRequestPost({ request, env }) {
       singleRoles,
       pairedRoles,
       usedRoles,
-      unusedRoles: Math.max(totalRoles - usedRoles, 0)
+      unusedRoles: Math.max(totalRoles - usedRoles, 0),
+      ...(body.includePreview ? { previewAssignment: makePreviewAssignment() } : {})
     });
   } catch (error) {
     return json({ error: error.message || "Role count unavailable" }, 500);
   }
+}
+
+function makePreviewAssignment() {
+  const group = pickPreviewGroup();
+  const slotIndex = group.type === "pair" && group.slots.length > 1
+    ? Math.floor(Math.random() * group.slots.length)
+    : 0;
+  const role = group.slots[slotIndex];
+  const partnerRole = group.type === "pair" ? counterpartRoleLabel(group, slotIndex) : "";
+  const partner = partnerRole || "your assigned contact";
+  const stabbingTarget = pickPreviewStabbingTarget(group);
+
+  return {
+    title: role.title,
+    identity: role.identity,
+    partnerRole,
+    stabbingTarget,
+    mission: role.mission.replaceAll("{{partner}}", partner),
+    bonus: role.bonus.replaceAll("{{partner}}", partner),
+    outfit: (role.outfit || "").replaceAll("{{partner}}", partner)
+  };
+}
+
+function pickPreviewGroup() {
+  const pairedGroups = ROLE_GROUPS.filter((group) => group.type === "pair");
+  const pool = pairedGroups.length ? pairedGroups : ROLE_GROUPS;
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
+function pickPreviewStabbingTarget(ownGroup) {
+  const candidates = ROLE_GROUPS
+    .filter((group) => group.key !== ownGroup.key)
+    .flatMap((group) => group.slots);
+  const pool = candidates.length ? candidates : ROLE_GROUPS.flatMap((group) => group.slots);
+  const target = pool[Math.floor(Math.random() * pool.length)];
+  return target.identity ? `${target.title} (${target.identity})` : target.title;
+}
+
+function counterpartRoleLabel(group, slotIndex) {
+  const title = group.slots[slotIndex].title;
+  const duplicateTitle = group.slots.some((slot, index) => index !== slotIndex && slot.title === title);
+  return duplicateTitle ? `the other ${title}` : title;
 }

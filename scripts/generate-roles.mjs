@@ -68,6 +68,9 @@ function parseCsv(input) {
   let row = [];
   let field = "";
   let quoted = false;
+  const firstLineEnd = input.indexOf("\n");
+  const firstLine = firstLineEnd === -1 ? input : input.slice(0, firstLineEnd);
+  const delimiter = firstLine.includes(";") ? ";" : ",";
 
   for (let index = 0; index < input.length; index += 1) {
     const char = input[index];
@@ -87,7 +90,7 @@ function parseCsv(input) {
 
     if (char === '"') {
       quoted = true;
-    } else if (char === ",") {
+    } else if (char === delimiter) {
       row.push(field);
       field = "";
     } else if (char === "\n") {

@@ -4,7 +4,7 @@ export function assignRoles(participants) {
   for (let attempt = 0; attempt < 1200; attempt += 1) {
     const selectedGroups = pickGroups(participants.length);
     const assignments = backtrackAssign(shuffle(participants), selectedGroups);
-    if (assignments) return assignments;
+    if (assignments) return addStabbingTargets(assignments);
   }
 
   throw new Error("Could not satisfy the current constraints. Relax a few role clearances or add more broadly eligible guests.");
@@ -31,7 +31,8 @@ export async function assignLateRole(kv, participant) {
     throw new Error("No unused eligible late-arrival roles are available.");
   }
 
-  return makeAssignment(participant, candidate.group, candidate.slotIndex);
+  const assignment = makeAssignment(participant, candidate.group, candidate.slotIndex);
+  return withStabbingTarget(assignment, await pickLateStabbingTarget(kv, assignment));
 }
 
 function pickGroups(targetSize) {
@@ -154,6 +155,70 @@ function makeAssignment(person, group, slotIndex, partnerName = "") {
     bonus: role.bonus.replaceAll("{{partner}}", partner),
     outfit: (role.outfit || "").replaceAll("{{partner}}", partner)
   };
+}
+
+function addStabbingTargets(assignments) {
+  if (assignments.length < 2) {
+    return assignments.map((assignment) => withStabbingTarget(assignment, null));
+  }
+
+  const canAvoidSameGroup = assignments.every((assignment) =>
+    assignments.some((target) =>
+      target.participantId !== assignment.participantId && target.groupKey !== assignment.groupKey
+    )
+  );
+
+  for (let attempt = 0; attempt < 200; attempt += 1) {
+    const targets = shuffle(assignments);
+    if (targets.every((target, index) =>
+      target.participantId !== assignments[index].participantId
+        && (!canAvoidSameGroup || target.groupKey !== assignments[index].groupKey)
+    )) {
+      return assignments.map((assignment, index) => withStabbingTarget(assignment, targets[index]));
+    }
+  }
+
+  const cycle = shuffle(assignments);
+  return cycle.map((assignment, index) =>
+    withStabbingTarget(assignment, cycle[(index + 1) % cycle.length])
+  );
+}
+
+async function pickLateStabbingTarget(kv, assignment) {
+  const existingAssignments = [];
+  let cursor;
+
+  do {
+    const page = await kv.list({ prefix: "assignment:", cursor });
+    for (const key of page.keys) {
+      const raw = await kv.get(key.name);
+      if (!raw) continue;
+      const existing = JSON.parse(raw);
+      if (existing.participantId !== assignment.participantId) {
+        existingAssignments.push(existing);
+      }
+    }
+    cursor = page.list_complete ? undefined : page.cursor;
+  } while (cursor);
+
+  if (!existingAssignments.length) return null;
+
+  const differentGroupTargets = existingAssignments.filter((target) => target.groupKey !== assignment.groupKey);
+  const pool = differentGroupTargets.length ? differentGroupTargets : existingAssignments;
+  return shuffle(pool)[0];
+}
+
+function withStabbingTarget(assignment, target) {
+  return {
+    ...assignment,
+    stabbingTarget: target ? roleTargetLabel(target) : ""
+  };
+}
+
+function roleTargetLabel(assignment) {
+  return assignment.identity
+    ? `${assignment.title} (${assignment.identity})`
+    : assignment.title;
 }
 
 function counterpartRoleLabel(group, slotIndex) {

@@ -13,6 +13,7 @@ export async function onRequestPost({ request, env }) {
       return json({ error: "Unauthorized Mission Control secret." }, 401);
     }
 
+    const includeAssignments = Boolean(body.includeAssignments);
     const ids = await getParticipantIds(kv);
     const agents = [];
     for (const id of ids) {
@@ -21,6 +22,9 @@ export async function onRequestPost({ request, env }) {
       const participant = JSON.parse(raw);
       const name = String(participant.name || "").trim();
       if (!name) continue;
+      const assignment = includeAssignments
+        ? await readAssignmentSummary(kv, participant.id)
+        : undefined;
       agents.push({
         id: participant.id,
         name,
@@ -29,13 +33,15 @@ export async function onRequestPost({ request, env }) {
         romanceOk: Boolean(participant.romanceOk),
         musicOk: Boolean(participant.musicOk),
         cameraOk: participant.cameraOk !== false,
-        foodDrinkOk: participant.foodDrinkOk !== false
+        foodDrinkOk: participant.foodDrinkOk !== false,
+        ...(includeAssignments ? { assignment } : {})
       });
     }
 
     return json({
       participantCount: agents.length,
       names: agents.map((agent) => agent.name),
+      includesAssignments: includeAssignments,
       summary: {
         partnerCount: agents.filter((agent) => agent.partnerName).length,
         romanceOkCount: agents.filter((agent) => agent.romanceOk).length,
@@ -57,4 +63,17 @@ function normalizeAttendanceLabel(value) {
   if (value === "barbecue") return "Barbecue only";
   if (value === "afterparty") return "Afterparty only";
   return "Barbecue + afterparty";
+}
+
+async function readAssignmentSummary(kv, participantId) {
+  const raw = await kv.get(`assignment:${participantId}`);
+  if (!raw) return null;
+
+  const assignment = JSON.parse(raw);
+  return {
+    title: String(assignment.title || ""),
+    identity: String(assignment.identity || ""),
+    partnerRole: String(assignment.partnerRole || ""),
+    stabbingTarget: String(assignment.stabbingTarget || "")
+  };
 }

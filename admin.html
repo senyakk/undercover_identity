@@ -40,10 +40,19 @@
           <input name="removeName" type="text" maxlength="80" placeholder="Name they signed up with">
         </label>
 
+        <details class="admin-options">
+          <summary>Endgame reveal options</summary>
+          <label class="check">
+            <input name="showAssignedRoles" type="checkbox">
+            <span>Show assigned roles in the registered agents list</span>
+          </label>
+        </details>
+
         <button class="primary" type="submit">Run draw</button>
         <div class="button-stack">
           <button type="button" id="rosterButton">Show registered agents</button>
           <button type="button" id="rolesButton">Show role count</button>
+          <button type="button" id="previewDossierButton">Preview sample dossier</button>
           <button type="button" id="removeAgentButton">Remove named agent</button>
           <button type="button" id="clearDrawButton">Discard draw</button>
           <button type="button" id="redrawButton">Discard draw and redraw</button>

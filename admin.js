@@ -3,6 +3,7 @@ const statusLine = document.querySelector("#statusLine");
 const resultBox = document.querySelector("#resultBox");
 const rosterButton = document.querySelector("#rosterButton");
 const rolesButton = document.querySelector("#rolesButton");
+const previewDossierButton = document.querySelector("#previewDossierButton");
 const removeAgentButton = document.querySelector("#removeAgentButton");
 const clearDrawButton = document.querySelector("#clearDrawButton");
 const redrawButton = document.querySelector("#redrawButton");
@@ -65,7 +66,10 @@ async function showRoster(message = "") {
   const response = await fetch("/api/roster", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ adminSecret: form.get("adminSecret") })
+    body: JSON.stringify({
+      adminSecret: form.get("adminSecret"),
+      includeAssignments: form.has("showAssignedRoles")
+    })
   });
   const data = await response.json();
   if (!response.ok) throw new Error(data.error || "Roster unavailable");
@@ -151,6 +155,42 @@ rolesButton.addEventListener("click", async () => {
   } finally {
     rolesButton.disabled = false;
     rolesButton.textContent = originalLabel;
+  }
+});
+
+previewDossierButton.addEventListener("click", async () => {
+  if (!drawForm.reportValidity()) return;
+
+  const originalLabel = previewDossierButton.textContent;
+  const form = new FormData(drawForm);
+  previewDossierButton.disabled = true;
+  previewDossierButton.textContent = "Loading...";
+
+  try {
+    const response = await fetch("/api/roles", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        adminSecret: form.get("adminSecret"),
+        includePreview: true
+      })
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || "Dossier preview unavailable");
+
+    resultBox.className = "result";
+    resultBox.innerHTML = `
+      <h3>Sample dossier preview</h3>
+      <p class="microcopy">Preview only. This does not run the draw or assign this role to anyone.</p>
+      ${assignmentHtml(data.previewAssignment)}
+    `;
+    await refreshState();
+  } catch (error) {
+    resultBox.className = "result";
+    resultBox.textContent = error.message;
+  } finally {
+    previewDossierButton.disabled = false;
+    previewDossierButton.textContent = originalLabel;
   }
 });
 
@@ -245,6 +285,7 @@ function escapeAttribute(value) {
 
 function rosterHtml(data) {
   const summary = data.summary || {};
+  const showAssignments = Boolean(data.includesAssignments);
   return `
     <div class="stat-grid">
       <div><strong>${data.participantCount}</strong><span>Total</span></div>
@@ -268,6 +309,7 @@ function rosterHtml(data) {
             <th>Speaker roles</th>
             <th>Photo/video</th>
             <th>Food/drink</th>
+            ${showAssignments ? "<th>Assigned role</th>" : ""}
             <th>Remove</th>
           </tr>
         </thead>
@@ -281,6 +323,7 @@ function rosterHtml(data) {
               <td>${agent.musicOk ? "Yes" : "No"}</td>
               <td>${agent.cameraOk ? "Yes" : "No"}</td>
               <td>${agent.foodDrinkOk ? "Yes" : "No"}</td>
+              ${showAssignments ? `<td>${assignmentSummaryHtml(agent.assignment)}</td>` : ""}
               <td>
                 <button
                   type="button"
@@ -294,6 +337,74 @@ function rosterHtml(data) {
         </tbody>
       </table>
     </div>
+  `;
+}
+
+function assignmentSummaryHtml(assignment) {
+  if (!assignment) {
+    return `<span class="muted-cell">Unassigned</span>`;
+  }
+
+  return `
+    <strong>${escapeHtml(assignment.title)}</strong>
+    <span class="table-note">${escapeHtml(assignment.identity)}</span>
+    ${assignment.partnerRole ? `<span class="table-note">Counterpart: ${escapeHtml(assignment.partnerRole)}</span>` : ""}
+    ${assignment.stabbingTarget ? `<span class="table-note">Target: ${escapeHtml(assignment.stabbingTarget)}</span>` : ""}
+  `;
+}
+
+function assignmentHtml(assignment) {
+  if (!assignment) return "<p>No preview assignment available.</p>";
+
+  return `
+    <dl class="dossier-preview">
+      <div>
+        <dt>Cover identity</dt>
+        <dd>${escapeHtml(assignment.title)}</dd>
+      </div>
+      <div>
+        <dt>Undercover persona</dt>
+        <dd>${escapeHtml(assignment.identity)}</dd>
+      </div>
+      ${assignment.partnerRole ? `
+        <div>
+          <dt>Counterpart to find</dt>
+          <dd>${escapeHtml(assignment.partnerRole)}</dd>
+          <dd class="hint">Their name is classified. Find out who they are at the party.</dd>
+        </div>
+      ` : ""}
+      ${assignment.stabbingTarget ? `
+        <div>
+          <dt>Stabbing target</dt>
+          <dd>${escapeHtml(assignment.stabbingTarget)}</dd>
+          <dd class="hint">Their name is classified. You only get one stabbing attempt. Submit this to Mission Control: Target name; Suspected role; Evidence.</dd>
+        </div>
+      ` : ""}
+      <div>
+        <dt>Bingo rules</dt>
+        <dd>Use your bingo sheet to identify other people's undercover identities during the game.</dd>
+        <dd class="hint">You get extra points if other players put you on their bingo. You lose points if someone successfully stabs you, but you will only find out at the very end.</dd>
+      </div>
+      <div>
+        <dt>Mission</dt>
+        <dd>${escapeHtml(assignment.mission)}</dd>
+      </div>
+      ${assignment.outfit ? `
+        <div>
+          <dt>Disguise inspiration</dt>
+          <dd>${escapeHtml(assignment.outfit)}</dd>
+          <dd class="hint">This is only a recommendation or inspiration. Wear whatever works for you.</dd>
+        </div>
+      ` : ""}
+      <div>
+        <dt>Bonus objective</dt>
+        <dd>${escapeHtml(assignment.bonus)}</dd>
+      </div>
+      <div>
+        <dt>If exposed</dt>
+        <dd>Deny everything. Then commit harder.</dd>
+      </div>
+    </dl>
   `;
 }
 

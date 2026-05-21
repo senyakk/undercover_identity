@@ -251,6 +251,21 @@ button:disabled {
   margin: 12px 0 16px;
 }
 
+.admin-options {
+  margin: -4px 0 16px;
+  color: var(--muted);
+}
+
+.admin-options summary {
+  cursor: pointer;
+  color: var(--amber);
+  font-weight: 850;
+}
+
+.admin-options .check {
+  margin: 12px 0 0;
+}
+
 .danger {
   background: var(--red);
   color: var(--ink);
@@ -317,6 +332,14 @@ button:disabled {
   gap: 8px;
   margin: 0;
   padding-left: 22px;
+}
+
+.muted-cell,
+.table-note {
+  display: block;
+  color: var(--muted);
+  font-size: 0.86rem;
+  line-height: 1.35;
 }
 
 .stat-grid {
