@@ -180,9 +180,8 @@ previewDossierButton.addEventListener("click", async () => {
 
     resultBox.className = "result";
     resultBox.innerHTML = `
-      <h3>Sample dossier preview</h3>
-      <p class="microcopy">Preview only. This does not run the draw or assign this role to anyone.</p>
       ${assignmentHtml(data.previewAssignment)}
+      <p class="microcopy">Preview only. This does not run the draw or assign this role to anyone.</p>
     `;
     await refreshState();
   } catch (error) {
@@ -362,7 +361,8 @@ function assignmentHtml(assignment) {
   if (!assignment) return "<p>No preview assignment available.</p>";
 
   return `
-    <dl class="dossier-preview">
+    <h3>CLASSIFIED DOSSIER</h3>
+    <dl>
       <div>
         <dt>Your undercover identity</dt>
         <dd>${escapeHtml(identityLabel(assignment))}</dd>

@@ -198,7 +198,7 @@ export const ROLE_GROUPS = [
     "slots": [
       {
         "title": "The Documentarian",
-        "identity": "Wildlife documentarian",
+        "identity": "Nature narrator",
         "mission": "Film short videos of the party while narrating people like animals in nature.",
         "bonus": "Narrate a feeding or mating ritual.",
         "outfit": "Neutral explorer colors, hat if available, documentary narrator calm.",
@@ -231,7 +231,7 @@ export const ROLE_GROUPS = [
     "slots": [
       {
         "title": "The Artist",
-        "identity": "Park sketch artist",
+        "identity": "Overdramatic portraitist",
         "mission": "Bring a sketchbook and draw people, scenes, gifting the drawings.",
         "bonus": "Make one sketch look unnecessarily dramatic.",
         "outfit": "Beret optional, sketchbook, pencil, paint-splattered or artsy layers.",
@@ -339,8 +339,8 @@ export const ROLE_GROUPS = [
       {
         "title": "Fake Couple",
         "identity": "Commitment-phobe partner",
-        "mission": "Identify who {{partner}} is at the party. Convince people you and they are a real couple, but panic whenever the relationship sounds serious.",
-        "bonus": "When your partner is telling stories you, keep correcting the details, making it sound awkward.",
+        "mission": "Identify who {{partner}} is at the party. Convince people you are a real couple, but get nervous whenever the relationship sounds too serious.",
+        "bonus": "Correct one of your partner's romantic stories in a way that makes it awkward.",
         "outfit": "Blind date outfit",
         "tags": [
           "romance",
@@ -393,7 +393,7 @@ export const ROLE_GROUPS = [
     "slots": [
       {
         "title": "The Influencer",
-        "identity": "Influencer",
+        "identity": "Sponsored-content hustler",
         "mission": "Film fake content, ask people to be in your vlog, and mention brand deals that do not exist.",
         "bonus": "Ask people to redo normal moments for content.",
         "outfit": "Trendy outfit, sunglasses, phone always ready, main-character posture.",
@@ -410,7 +410,7 @@ export const ROLE_GROUPS = [
     "slots": [
       {
         "title": "The Therapist",
-        "identity": "Therapist",
+        "identity": "Feelings analyst",
         "mission": "Ask people \"and how did that make you feel?\" during normal conversations.",
         "bonus": "Offer a completely unnecessary breakthrough.",
         "outfit": "Calm neutral outfit, cardigan vibe, notebook, deeply concerned face.",
@@ -458,8 +458,8 @@ export const ROLE_GROUPS = [
     "slots": [
       {
         "title": "The Fortune Cookie",
-        "identity": "Fortune cookie teller",
-        "mission": "Give people tiny pieces of life advice written on paper.",
+        "identity": "Pocket philosopher",
+        "mission": "Give out people tiny pieces of life advice written on paper (fortune cookies).",
         "bonus": "Give two people fortunes that suspiciously connect to each other.",
         "outfit": "Pockets full of paper slips, warm mystical-but-cheap aesthetic.",
         "tags": [
@@ -474,7 +474,7 @@ export const ROLE_GROUPS = [
     "slots": [
       {
         "title": "The Preacher",
-        "identity": "Improvised preacher",
+        "identity": "Blessing enthusiast",
         "mission": "Randomly recite possibly made up holy script verses.",
         "bonus": "Bless a normal party object, for example alcohol before serving",
         "outfit": "Formal-ish dark outfit, commanding posture, improvised holy book or notes.",
@@ -490,7 +490,7 @@ export const ROLE_GROUPS = [
     "slots": [
       {
         "title": "The Talent Scout",
-        "identity": "Talent scout",
+        "identity": "Star potential evaluator",
         "mission": "Audition people for imaginary opportunities and take notes on their star potential.",
         "bonus": "Promise someone that your people will call their people.",
         "outfit": "Smart casual, sunglasses, notes app, industry-person energy.",
@@ -539,7 +539,7 @@ export const ROLE_GROUPS = [
       {
         "title": "The Cult Recruiter",
         "identity": "The Movement founder",
-        "mission": "Identify who {{partner}} is at the party. Try to recruit people into a completely fake movement with their support.",
+        "mission": "Try to recruit people into a completely fake movement with their support.",
         "bonus": "Create a ritual or slogan.",
         "outfit": "Soft neutral colors, symbol or ribbon, calm unsettling enthusiasm.",
         "tags": [
