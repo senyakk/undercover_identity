@@ -113,32 +113,16 @@ function assignmentHtml(assignment) {
     <h3>CLASSIFIED DOSSIER</h3>
     <dl>
       <div>
-        <dt>Cover identity</dt>
-        <dd>${escapeHtml(assignment.title)}</dd>
+        <dt>Undercover identity</dt>
+        <dd>${escapeHtml(identityLabel(assignment))}</dd>
       </div>
-      <div>
-        <dt>Undercover persona</dt>
-        <dd>${escapeHtml(assignment.identity)}</dd>
-      </div>
-      ${assignment.partnerRole ? `
-        <div>
-          <dt>Counterpart to find</dt>
-          <dd>${escapeHtml(assignment.partnerRole)}</dd>
-          <dd class="hint">Their name is classified. Find out who they are at the party.</dd>
-        </div>
-      ` : ""}
       ${assignment.stabbingTarget ? `
         <div>
           <dt>Stabbing target</dt>
           <dd>${escapeHtml(assignment.stabbingTarget)}</dd>
-          <dd class="hint">Their name is classified. You only get one stabbing attempt. Submit this to Mission Control: Target name; Suspected role; Evidence.</dd>
+          <dd class="hint">You are given one person to stab during the party. You only know their role. Find out their name and secretly report to the organisers.</dd>
         </div>
       ` : ""}
-      <div>
-        <dt>Bingo rules</dt>
-        <dd>Use your bingo sheet to identify other people's undercover identities during the game.</dd>
-        <dd class="hint">You get extra points if other players put you on their bingo. You lose points if someone successfully stabs you, but you will only find out at the very end.</dd>
-      </div>
       <div>
         <dt>Mission</dt>
         <dd>${escapeHtml(assignment.mission)}</dd>
@@ -179,6 +163,12 @@ function showSignupSuccess(revealUrl, revealCode, assignment = null) {
     await navigator.clipboard.writeText(revealUrl);
     document.querySelector("#copyLink").textContent = "Copied";
   });
+}
+
+function identityLabel(assignment) {
+  return assignment.identity
+    ? `${assignment.title} (${assignment.identity})`
+    : assignment.title;
 }
 
 function showMessage(message, isError = false) {
