@@ -229,7 +229,7 @@ function counterpartRoleLabel(group, slotIndex) {
 }
 
 function duplicateCounterpartLabel(title) {
-  if (/\bcouple\b/i.test(title)) return `the other person in your ${title.toLowerCase()}`;
+  if (/\bcouple\b/i.test(title)) return `the other person`;
   return `the other person with your ${title} role`;
 }
 

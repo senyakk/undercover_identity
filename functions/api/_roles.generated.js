@@ -328,7 +328,7 @@ export const ROLE_GROUPS = [
       {
         "title": "Fake Couple",
         "identity": "Hopeless romantic",
-        "mission": "Identify who {{partner}} is at the party. Convince people that you and they are a real couple. Be overly sentimental about tiny details.",
+        "mission": "You are in the fake couple. Identify who {{partner}} is at the party. Convince people that you and they are a real couple. Be overly sentimental about tiny details.",
         "bonus": "Tell the story of your first date, make it sound magical.",
         "outfit": "Blind date outfit",
         "tags": [
@@ -339,8 +339,8 @@ export const ROLE_GROUPS = [
       {
         "title": "Fake Couple",
         "identity": "Commitment-phobe partner",
-        "mission": "Identify who {{partner}} is at the party. Convince people you are a real couple, but get nervous whenever the relationship sounds too serious.",
-        "bonus": "Correct one of your partner's romantic stories in a way that makes it awkward.",
+        "mission": "You are in the fake couple. Identify who {{partner}} is at the party. Convince people you are a real couple, but get nervous whenever the relationship sounds too serious.",
+        "bonus": "Correct your partner's romantic stories in a way that makes it awkward.",
         "outfit": "Blind date outfit",
         "tags": [
           "romance",
@@ -747,7 +747,7 @@ export const ROLE_GROUPS = [
       {
         "title": "Divorced Couple",
         "identity": "Still bitter ex-spouse",
-        "mission": "Identify who {{partner}} is at the party. Convince people you and they used to be together. Casually bring up old grievances.",
+        "mission": "You are in the divorced couple. Identify who {{partner}} is at the party. Convince people you and they used to be together. Casually bring up old grievances.",
         "bonus": "Reference one fictional shared asset you still want back.",
         "outfit": "Slightly too formal for a park, bitter reunion energy.",
         "tags": [
@@ -758,7 +758,7 @@ export const ROLE_GROUPS = [
       {
         "title": "Divorced Couple",
         "identity": "Pretending-to-be-fine ex-spouse",
-        "mission": "Identify who {{partner}} is at the party. Convince people you and they used to be together and are totally fine now. Occasionally argue over imaginary property.",
+        "mission": "You are in the divorced couple. Identify who {{partner}} is at the party. Convince people you and they used to be together and are totally fine now. Occasionally argue over imaginary property.",
         "bonus": "Compliment {{partner}} in a way that sounds like an insult.",
         "outfit": "Slightly too formal for a park, bitter reunion energy.",
         "tags": [
