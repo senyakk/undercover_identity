@@ -4,6 +4,7 @@ const resultBox = document.querySelector("#resultBox");
 const rosterButton = document.querySelector("#rosterButton");
 const rolesButton = document.querySelector("#rolesButton");
 const previewDossierButton = document.querySelector("#previewDossierButton");
+const reissueLinkButton = document.querySelector("#reissueLinkButton");
 const removeAgentButton = document.querySelector("#removeAgentButton");
 const clearDrawButton = document.querySelector("#clearDrawButton");
 const redrawButton = document.querySelector("#redrawButton");
@@ -190,6 +191,58 @@ previewDossierButton.addEventListener("click", async () => {
   } finally {
     previewDossierButton.disabled = false;
     previewDossierButton.textContent = originalLabel;
+  }
+});
+
+reissueLinkButton.addEventListener("click", async () => {
+  if (!drawForm.reportValidity()) return;
+  const form = new FormData(drawForm);
+  const name = String(form.get("removeName") || "").trim();
+  if (!name) {
+    resultBox.className = "result";
+    resultBox.textContent = "Enter the exact registered name to reissue a reveal link.";
+    return;
+  }
+  if (!confirm(`Reissue "${name}" a new reveal link? Their old link will stop working, but their role stays the same.`)) return;
+
+  const originalLabel = reissueLinkButton.textContent;
+  reissueLinkButton.disabled = true;
+  reissueLinkButton.textContent = "Reissuing...";
+
+  try {
+    const response = await fetch("/api/reset", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        adminSecret: form.get("adminSecret"),
+        action: "reissueRevealLink",
+        name
+      })
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || "Could not reissue reveal link");
+
+    resultBox.className = "result";
+    resultBox.innerHTML = `
+      <h3>Reveal link reissued</h3>
+      <p>${escapeHtml(data.name)} keeps the same assigned role. Their old reveal link no longer works.</p>
+      <div class="copy-row">
+        <input value="${escapeAttribute(data.revealUrl)}" readonly aria-label="New private reveal link">
+        <button type="button" id="copyReissuedLink">Copy</button>
+      </div>
+      <p class="microcopy">Reveal code: <strong>${escapeHtml(data.revealCode)}</strong></p>
+    `;
+    document.querySelector("#copyReissuedLink").addEventListener("click", async () => {
+      await navigator.clipboard.writeText(data.revealUrl);
+      document.querySelector("#copyReissuedLink").textContent = "Copied";
+    });
+    await refreshState();
+  } catch (error) {
+    resultBox.className = "result";
+    resultBox.textContent = error.message;
+  } finally {
+    reissueLinkButton.disabled = false;
+    reissueLinkButton.textContent = originalLabel;
   }
 });
 

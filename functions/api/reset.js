@@ -3,10 +3,13 @@ import {
   INDEX_KEY,
   getParticipantIds,
   json,
+  makeToken,
   normalize,
+  publicOrigin,
   putParticipantIds,
   readJson,
-  requireKv
+  requireKv,
+  sha256
 } from "./_lib.js";
 import { assignRoles } from "./_assign.js";
 
@@ -33,6 +36,11 @@ export async function onRequestPost({ request, env }) {
       return json({ action: "removeParticipantById", ...result });
     }
 
+    if (body.action === "reissueRevealLink") {
+      const result = await reissueRevealLink(kv, body.name, request);
+      return json({ action: "reissueRevealLink", ...result });
+    }
+
     if (body.action === "clearDraw") {
       const assignmentCount = await clearDraw(kv);
       const ids = await getParticipantIds(kv);
@@ -51,9 +59,14 @@ export async function onRequestPost({ request, env }) {
 }
 
 async function removeParticipantByName(kv, name) {
+  const participant = await findParticipantByName(kv, name);
+  return deleteParticipant(kv, participant);
+}
+
+async function findParticipantByName(kv, name) {
   const targetName = String(name || "").trim();
   if (!targetName) {
-    throw new Error("Enter the exact registered name to remove.");
+    throw new Error("Enter the exact registered name.");
   }
 
   const ids = await getParticipantIds(kv);
@@ -75,8 +88,7 @@ async function removeParticipantByName(kv, name) {
     throw new Error(`Multiple registered agents are named "${targetName}". Remove by name is ambiguous.`);
   }
 
-  const participant = matches[0];
-  return deleteParticipant(kv, participant);
+  return matches[0];
 }
 
 async function removeParticipantById(kv, participantId) {
@@ -117,6 +129,39 @@ async function deleteParticipant(kv, participant) {
     participantCount: remainingIds.length,
     drawComplete: Boolean(drawRaw)
   };
+}
+
+async function reissueRevealLink(kv, name, request) {
+  const participant = await findParticipantByName(kv, name);
+  const { token, tokenHash } = await createRevealCode(kv);
+  if (participant.tokenHash) {
+    await kv.delete(`reveal:${participant.tokenHash}`);
+  }
+
+  const updatedParticipant = {
+    ...participant,
+    tokenHash,
+    revealReissuedAt: new Date().toISOString()
+  };
+  await kv.put(`participant:${participant.id}`, JSON.stringify(updatedParticipant));
+  await kv.put(`reveal:${tokenHash}`, participant.id);
+
+  return {
+    name: participant.name,
+    revealCode: token,
+    revealUrl: `${publicOrigin(request)}/?token=${encodeURIComponent(token)}`
+  };
+}
+
+async function createRevealCode(kv) {
+  for (let attempt = 0; attempt < 10; attempt += 1) {
+    const token = makeToken();
+    const tokenHash = await sha256(token);
+    if (!(await kv.get(`reveal:${tokenHash}`))) {
+      return { token, tokenHash };
+    }
+  }
+  throw new Error("Could not create a unique reveal code. Try again.");
 }
 
 async function clearRoster(kv) {
