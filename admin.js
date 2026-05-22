@@ -5,6 +5,7 @@ const rosterButton = document.querySelector("#rosterButton");
 const rolesButton = document.querySelector("#rolesButton");
 const previewDossierButton = document.querySelector("#previewDossierButton");
 const reissueLinkButton = document.querySelector("#reissueLinkButton");
+const rerollRoleButton = document.querySelector("#rerollRoleButton");
 const removeAgentButton = document.querySelector("#removeAgentButton");
 const clearDrawButton = document.querySelector("#clearDrawButton");
 const redrawButton = document.querySelector("#redrawButton");
@@ -243,6 +244,55 @@ reissueLinkButton.addEventListener("click", async () => {
   } finally {
     reissueLinkButton.disabled = false;
     reissueLinkButton.textContent = originalLabel;
+  }
+});
+
+rerollRoleButton.addEventListener("click", async () => {
+  if (!drawForm.reportValidity()) return;
+  const form = new FormData(drawForm);
+  const name = String(form.get("removeName") || "").trim();
+  if (!name) {
+    resultBox.className = "result";
+    resultBox.textContent = "Enter the exact registered name to reroll their role.";
+    return;
+  }
+  if (!confirm(`Reroll "${name}" into an unused eligible role? Their reveal link stays the same, and anyone targeting their old role will target the new one.`)) return;
+
+  const originalLabel = rerollRoleButton.textContent;
+  rerollRoleButton.disabled = true;
+  rerollRoleButton.textContent = "Rerolling...";
+
+  try {
+    const response = await fetch("/api/reset", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        adminSecret: form.get("adminSecret"),
+        action: "rerollParticipantRole",
+        name
+      })
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || "Could not reroll role");
+
+    resultBox.className = "result";
+    resultBox.innerHTML = `
+      <h3>Role rerolled</h3>
+      <p>${escapeHtml(data.name)} keeps the same reveal link.</p>
+      <dl>
+        <div><dt>Old role</dt><dd>${escapeHtml(data.oldRole)}</dd></div>
+        <div><dt>New role</dt><dd>${escapeHtml(data.newRole)}</dd></div>
+        <div><dt>Targets updated</dt><dd>${data.updatedTargetCount}</dd></div>
+      </dl>
+      <p class="microcopy">Ask them to refresh their reveal link before the game.</p>
+    `;
+    await refreshState();
+  } catch (error) {
+    resultBox.className = "result";
+    resultBox.textContent = error.message;
+  } finally {
+    rerollRoleButton.disabled = false;
+    rerollRoleButton.textContent = originalLabel;
   }
 });
 

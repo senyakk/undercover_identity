@@ -1,6 +1,7 @@
 import {
   DRAW_KEY,
   INDEX_KEY,
+  ROLE_GROUPS,
   getParticipantIds,
   json,
   makeToken,
@@ -39,6 +40,11 @@ export async function onRequestPost({ request, env }) {
     if (body.action === "reissueRevealLink") {
       const result = await reissueRevealLink(kv, body.name, request);
       return json({ action: "reissueRevealLink", ...result });
+    }
+
+    if (body.action === "rerollParticipantRole") {
+      const result = await rerollParticipantRole(kv, body.name);
+      return json({ action: "rerollParticipantRole", ...result });
     }
 
     if (body.action === "clearDraw") {
@@ -151,6 +157,189 @@ async function reissueRevealLink(kv, name, request) {
     revealCode: token,
     revealUrl: `${publicOrigin(request)}/?token=${encodeURIComponent(token)}`
   };
+}
+
+async function rerollParticipantRole(kv, name) {
+  const participant = await findParticipantByName(kv, name);
+  const assignmentRaw = await kv.get(`assignment:${participant.id}`);
+  if (!assignmentRaw) {
+    throw new Error(`${participant.name} does not have an assigned role yet.`);
+  }
+
+  const currentAssignment = JSON.parse(assignmentRaw);
+  const currentGroup = ROLE_GROUPS.find((group) => group.key === currentAssignment.groupKey);
+  if (!currentGroup) {
+    throw new Error(`Could not find ${participant.name}'s current role group.`);
+  }
+  if (currentGroup.type !== "single") {
+    throw new Error(`${participant.name} has a pair role. Rerolling one half of a pair would break the counterpart's mission; use redraw instead.`);
+  }
+
+  const usedRoleIds = await getAssignedRoleIds(kv, participant.id);
+  const usedGroupKeys = await getAssignedGroupKeys(kv, participant.id);
+  const currentRoleId = currentAssignment.roleId || roleId(currentGroup, currentAssignment.slotIndex || 0);
+  const candidates = shuffle(
+    ROLE_GROUPS
+      .flatMap((group) => group.slots.map((role, slotIndex) => ({ group, role, slotIndex })))
+      .filter(({ group, role, slotIndex }) =>
+        group.type === "single"
+          && roleId(group, slotIndex) !== currentRoleId
+          && !usedRoleIds.has(roleId(group, slotIndex))
+          && dependenciesSatisfiedByAssignedRoles(group, usedGroupKeys)
+          && eligible(participant, role)
+      )
+  );
+  const candidate = candidates[0];
+  if (!candidate) {
+    throw new Error(`No unused eligible single roles are available for ${participant.name}.`);
+  }
+
+  const newAssignment = {
+    ...makeSingleAssignment(participant, candidate.group, candidate.slotIndex),
+    stabbingTarget: String(currentAssignment.stabbingTarget || ""),
+    assignedAt: currentAssignment.assignedAt || new Date().toISOString(),
+    rerolledAt: new Date().toISOString(),
+    previousRoleId: currentRoleId
+  };
+  await kv.put(`assignment:${participant.id}`, JSON.stringify(newAssignment));
+
+  const updatedTargetCount = await retargetAssassins(
+    kv,
+    participant.id,
+    targetLabelsFor(currentAssignment),
+    roleTargetLabel(newAssignment)
+  );
+
+  return {
+    name: participant.name,
+    oldRole: displayRole(currentAssignment),
+    newRole: displayRole(newAssignment),
+    updatedTargetCount
+  };
+}
+
+async function getAssignedRoleIds(kv, excludedParticipantId = "") {
+  const ids = new Set();
+  let cursor;
+
+  do {
+    const page = await kv.list({ prefix: "assignment:", cursor });
+    for (const key of page.keys) {
+      const raw = await kv.get(key.name);
+      if (!raw) continue;
+      const assignment = JSON.parse(raw);
+      if (assignment.participantId === excludedParticipantId) continue;
+      if (assignment.roleId) ids.add(assignment.roleId);
+    }
+    cursor = page.list_complete ? undefined : page.cursor;
+  } while (cursor);
+
+  return ids;
+}
+
+async function getAssignedGroupKeys(kv, excludedParticipantId = "") {
+  const keys = new Set();
+  let cursor;
+
+  do {
+    const page = await kv.list({ prefix: "assignment:", cursor });
+    for (const key of page.keys) {
+      const raw = await kv.get(key.name);
+      if (!raw) continue;
+      const assignment = JSON.parse(raw);
+      if (assignment.participantId === excludedParticipantId) continue;
+      if (assignment.groupKey) keys.add(assignment.groupKey);
+    }
+    cursor = page.list_complete ? undefined : page.cursor;
+  } while (cursor);
+
+  return keys;
+}
+
+async function retargetAssassins(kv, rerolledParticipantId, oldTargetLabels, newTargetLabel) {
+  let updated = 0;
+  let cursor;
+
+  do {
+    const page = await kv.list({ prefix: "assignment:", cursor });
+    for (const key of page.keys) {
+      const raw = await kv.get(key.name);
+      if (!raw) continue;
+      const assignment = JSON.parse(raw);
+      if (assignment.participantId === rerolledParticipantId) continue;
+      if (!oldTargetLabels.has(String(assignment.stabbingTarget || ""))) continue;
+      await kv.put(key.name, JSON.stringify({ ...assignment, stabbingTarget: newTargetLabel }));
+      updated += 1;
+    }
+    cursor = page.list_complete ? undefined : page.cursor;
+  } while (cursor);
+
+  return updated;
+}
+
+function makeSingleAssignment(person, group, slotIndex) {
+  const role = group.slots[slotIndex];
+  return {
+    participantId: person.id,
+    roleId: roleId(group, slotIndex),
+    groupKey: group.key,
+    slotIndex,
+    partnerRole: "",
+    title: role.title,
+    identity: role.identity,
+    mission: role.mission,
+    bonus: role.bonus,
+    outfit: role.outfit || ""
+  };
+}
+
+function eligible(person, role) {
+  const tags = new Set(role.tags || []);
+  if (tags.has("romance") && !person.romanceOk) return false;
+  if (tags.has("music") && !person.musicOk) return false;
+  if (tags.has("camera") && person.cameraOk === false) return false;
+  if ((tags.has("alcohol") || tags.has("food")) && person.foodDrinkOk === false) return false;
+  return true;
+}
+
+function dependenciesSatisfiedByAssignedRoles(group, usedGroupKeys) {
+  if (!group.requiresAnyGroupKey?.length) return true;
+  return group.requiresAnyGroupKey.some((key) => usedGroupKeys.has(key));
+}
+
+function roleTargetLabel(assignment) {
+  if (/\bcouple\b/i.test(assignment.title)) {
+    return `${assignment.title} (only one person needed)`;
+  }
+  return assignment.title;
+}
+
+function targetLabelsFor(assignment) {
+  return new Set([
+    roleTargetLabel(assignment),
+    String(assignment.title || ""),
+    assignment.identity ? `${assignment.title} (${assignment.identity})` : "",
+    String(assignment.identity || "")
+  ].filter(Boolean));
+}
+
+function displayRole(assignment) {
+  return assignment.identity
+    ? `${assignment.title} (${assignment.identity})`
+    : assignment.title;
+}
+
+function roleId(group, slotIndex) {
+  return `${group.key}:${slotIndex}`;
+}
+
+function shuffle(items) {
+  const copy = [...items];
+  for (let index = copy.length - 1; index > 0; index -= 1) {
+    const swapIndex = Math.floor(Math.random() * (index + 1));
+    [copy[index], copy[swapIndex]] = [copy[swapIndex], copy[index]];
+  }
+  return copy;
 }
 
 async function createRevealCode(kv) {
