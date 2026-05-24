@@ -23,6 +23,10 @@ export async function onRequestPost({ request, env }) {
       return json({ error: "Enter a name with at least two characters." }, 400);
     }
 
+    if (await participantNameExists(kv, name)) {
+      return json({ error: "Contact Senya to get your previous link." }, 409);
+    }
+
     const id = crypto.randomUUID();
     const { token, tokenHash } = await createRevealCode(kv);
     const partnerName = String(body.partnerName || "").trim().slice(0, 80);
@@ -67,6 +71,20 @@ function normalizeAttendance(value) {
     return value;
   }
   return "both";
+}
+
+async function participantNameExists(kv, name) {
+  const targetName = normalize(name);
+  const ids = await getParticipantIds(kv);
+  for (const id of ids) {
+    const raw = await kv.get(`participant:${id}`);
+    if (!raw) continue;
+    const participant = JSON.parse(raw);
+    if (normalize(participant.name) === targetName) {
+      return true;
+    }
+  }
+  return false;
 }
 
 async function createRevealCode(kv) {
