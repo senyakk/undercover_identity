@@ -46,7 +46,7 @@ drawForm.addEventListener("submit", async (event) => {
 });
 
 rosterButton.addEventListener("click", async () => {
-  if (!drawForm.reportValidity()) return;
+  if (!requireAdminSecret()) return;
 
   const originalLabel = rosterButton.textContent;
   rosterButton.disabled = true;
@@ -88,10 +88,16 @@ async function showRoster(message = "") {
 resultBox.addEventListener("click", async (event) => {
   const button = event.target.closest("[data-remove-agent-id]");
   if (!button) return;
-  if (!drawForm.reportValidity()) return;
+  if (!requireAdminSecret()) return;
 
   const name = button.dataset.removeAgentName || "this agent";
-  if (!confirm(`Remove "${name}" from the roster and delete their reveal link?`)) return;
+  const confirmed = await requestConfirmation({
+    title: "Remove agent?",
+    message: `Remove "${name}" from the roster and delete their reveal link?`,
+    confirmLabel: "Remove agent",
+    danger: true
+  });
+  if (!confirmed) return;
 
   const originalLabel = button.textContent;
   const form = new FormData(drawForm);
@@ -122,7 +128,7 @@ resultBox.addEventListener("click", async (event) => {
 });
 
 rolesButton.addEventListener("click", async () => {
-  if (!drawForm.reportValidity()) return;
+  if (!requireAdminSecret()) return;
 
   const originalLabel = rolesButton.textContent;
   const form = new FormData(drawForm);
@@ -161,7 +167,7 @@ rolesButton.addEventListener("click", async () => {
 });
 
 previewDossierButton.addEventListener("click", async () => {
-  if (!drawForm.reportValidity()) return;
+  if (!requireAdminSecret()) return;
 
   const originalLabel = previewDossierButton.textContent;
   const form = new FormData(drawForm);
@@ -196,17 +202,17 @@ previewDossierButton.addEventListener("click", async () => {
 });
 
 reissueLinkButton.addEventListener("click", async () => {
-  if (!drawForm.reportValidity()) return;
-  const form = new FormData(drawForm);
-  const name = String(form.get("removeName") || "").trim();
-  if (!name) {
-    resultBox.className = "result";
-    resultBox.textContent = "Enter the exact registered name to reissue a reveal link.";
-    return;
-  }
-  if (!confirm(`Reissue "${name}" a new reveal link? Their old link will stop working, but their role stays the same.`)) return;
+  const name = requireNamedAgent("Enter the exact registered name to reissue a reveal link.");
+  if (!name) return;
+  const confirmed = await requestConfirmation({
+    title: "Reissue reveal link?",
+    message: `Reissue "${name}" a new reveal link? Their old link will stop working, but their role stays the same.`,
+    confirmLabel: "Reissue link"
+  });
+  if (!confirmed) return;
 
   const originalLabel = reissueLinkButton.textContent;
+  const form = new FormData(drawForm);
   reissueLinkButton.disabled = true;
   reissueLinkButton.textContent = "Reissuing...";
 
@@ -228,14 +234,15 @@ reissueLinkButton.addEventListener("click", async () => {
       <h3>Reveal link reissued</h3>
       <p>${escapeHtml(data.name)} keeps the same assigned role. Their old reveal link no longer works.</p>
       <div class="copy-row">
-        <input value="${escapeAttribute(data.revealUrl)}" readonly aria-label="New private reveal link">
+        <input id="reissuedRevealUrl" value="${escapeAttribute(data.revealUrl)}" readonly aria-label="New private reveal link">
         <button type="button" id="copyReissuedLink">Copy</button>
       </div>
       <p class="microcopy">Reveal code: <strong>${escapeHtml(data.revealCode)}</strong></p>
     `;
-    document.querySelector("#copyReissuedLink").addEventListener("click", async () => {
-      await navigator.clipboard.writeText(data.revealUrl);
-      document.querySelector("#copyReissuedLink").textContent = "Copied";
+    const copyButton = document.querySelector("#copyReissuedLink");
+    copyButton.addEventListener("click", async () => {
+      await copyText(data.revealUrl, document.querySelector("#reissuedRevealUrl"));
+      copyButton.textContent = "Copied";
     });
     await refreshState();
   } catch (error) {
@@ -248,17 +255,17 @@ reissueLinkButton.addEventListener("click", async () => {
 });
 
 rerollRoleButton.addEventListener("click", async () => {
-  if (!drawForm.reportValidity()) return;
-  const form = new FormData(drawForm);
-  const name = String(form.get("removeName") || "").trim();
-  if (!name) {
-    resultBox.className = "result";
-    resultBox.textContent = "Enter the exact registered name to reroll their role.";
-    return;
-  }
-  if (!confirm(`Reroll "${name}" into an unused eligible role? Their reveal link stays the same, and anyone targeting their old role will target the new one.`)) return;
+  const name = requireNamedAgent("Enter the exact registered name to reroll their role.");
+  if (!name) return;
+  const confirmed = await requestConfirmation({
+    title: "Reroll role?",
+    message: `Reroll "${name}" into an unused eligible role? Their reveal link stays the same, and anyone targeting their old role will target the new one.`,
+    confirmLabel: "Reroll role"
+  });
+  if (!confirmed) return;
 
   const originalLabel = rerollRoleButton.textContent;
+  const form = new FormData(drawForm);
   rerollRoleButton.disabled = true;
   rerollRoleButton.textContent = "Rerolling...";
 
@@ -297,15 +304,15 @@ rerollRoleButton.addEventListener("click", async () => {
 });
 
 removeAgentButton.addEventListener("click", async () => {
-  if (!drawForm.reportValidity()) return;
-  const form = new FormData(drawForm);
-  const name = String(form.get("removeName") || "").trim();
-  if (!name) {
-    resultBox.className = "result";
-    resultBox.textContent = "Enter the exact registered name to remove.";
-    return;
-  }
-  if (!confirm(`Remove "${name}" from the roster and delete their reveal link?`)) return;
+  const name = requireNamedAgent("Enter the exact registered name to remove.");
+  if (!name) return;
+  const confirmed = await requestConfirmation({
+    title: "Remove agent?",
+    message: `Remove "${name}" from the roster and delete their reveal link?`,
+    confirmLabel: "Remove agent",
+    danger: true
+  });
+  if (!confirmed) return;
 
   await runResetAction({
     action: "removeParticipant",
@@ -320,8 +327,14 @@ removeAgentButton.addEventListener("click", async () => {
 });
 
 clearDrawButton.addEventListener("click", async () => {
-  if (!drawForm.reportValidity()) return;
-  if (!confirm("Discard the current assignments but keep every signed up agent and reveal link? Guests will wait until you run a new draw.")) return;
+  if (!requireAdminSecret()) return;
+  const confirmed = await requestConfirmation({
+    title: "Discard draw?",
+    message: "Discard the current assignments but keep every signed up agent and reveal link? Guests will wait until you run a new draw.",
+    confirmLabel: "Discard draw",
+    danger: true
+  });
+  if (!confirmed) return;
 
   await runResetAction({
     action: "clearDraw",
@@ -334,8 +347,14 @@ clearDrawButton.addEventListener("click", async () => {
 });
 
 redrawButton.addEventListener("click", async () => {
-  if (!drawForm.reportValidity()) return;
-  if (!confirm("Discard the current assignments and redraw for every signed up agent? Existing reveal links will show new roles.")) return;
+  if (!requireAdminSecret()) return;
+  const confirmed = await requestConfirmation({
+    title: "Redraw assignments?",
+    message: "Discard the current assignments and redraw for every signed up agent? Existing reveal links will show new roles.",
+    confirmLabel: "Redraw",
+    danger: true
+  });
+  if (!confirmed) return;
 
   await runResetAction({
     action: "redraw",
@@ -347,8 +366,14 @@ redrawButton.addEventListener("click", async () => {
 });
 
 clearRosterButton.addEventListener("click", async () => {
-  if (!drawForm.reportValidity()) return;
-  if (!confirm("Discard every signed up agent, reveal link, and assignment? This cannot be undone.")) return;
+  if (!requireAdminSecret()) return;
+  const confirmed = await requestConfirmation({
+    title: "Discard roster?",
+    message: "Discard every signed up agent, reveal link, and assignment? This cannot be undone.",
+    confirmLabel: "Discard everything",
+    danger: true
+  });
+  if (!confirmed) return;
 
   await runResetAction({
     action: "clearRoster",
@@ -369,6 +394,78 @@ async function refreshState() {
       : `${data.participantCount} agent${data.participantCount === 1 ? "" : "s"} registered.`;
   } catch {
     statusLine.textContent = "Agency channel offline.";
+  }
+}
+
+function requireAdminSecret() {
+  const input = drawForm.elements.adminSecret;
+  if (String(input.value || "").trim()) {
+    return true;
+  }
+  showAdminNotice("Enter the admin secret first.");
+  focusField(input);
+  return false;
+}
+
+function requireNamedAgent(message) {
+  if (!requireAdminSecret()) return "";
+  const input = drawForm.elements.removeName;
+  const name = String(input.value || "").trim();
+  if (name) return name;
+  showAdminNotice(message);
+  focusField(input);
+  return "";
+}
+
+function showAdminNotice(message) {
+  resultBox.className = "result";
+  resultBox.innerHTML = `<p>${escapeHtml(message)}</p>`;
+  scrollElement(resultBox, "nearest");
+}
+
+function requestConfirmation({ title, message, confirmLabel, danger = false }) {
+  resultBox.className = "result";
+  resultBox.innerHTML = `
+    <h3>${escapeHtml(title)}</h3>
+    <p>${escapeHtml(message)}</p>
+    <div class="confirm-row">
+      <button type="button" class="${danger ? "danger" : "primary"}" data-confirm-action="yes">${escapeHtml(confirmLabel)}</button>
+      <button type="button" data-confirm-action="no">Cancel</button>
+    </div>
+  `;
+  scrollElement(resultBox, "nearest");
+
+  return new Promise((resolve) => {
+    resultBox.querySelector("[data-confirm-action='yes']").addEventListener("click", () => resolve(true), { once: true });
+    resultBox.querySelector("[data-confirm-action='no']").addEventListener("click", () => resolve(false), { once: true });
+  });
+}
+
+async function copyText(text, input) {
+  try {
+    await navigator.clipboard.writeText(text);
+    return;
+  } catch {
+    input.focus();
+    input.select();
+    document.execCommand("copy");
+  }
+}
+
+function focusField(input) {
+  try {
+    input.focus({ preventScroll: true });
+  } catch {
+    input.focus();
+  }
+  scrollElement(input, "center");
+}
+
+function scrollElement(element, block) {
+  try {
+    element.scrollIntoView({ behavior: "smooth", block });
+  } catch {
+    element.scrollIntoView();
   }
 }
 

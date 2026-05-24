@@ -251,6 +251,17 @@ button:disabled {
   margin: 12px 0 16px;
 }
 
+.confirm-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.confirm-row .primary {
+  width: auto;
+}
+
 .admin-options {
   margin: -4px 0 16px;
   color: var(--muted);
@@ -528,6 +539,10 @@ button:disabled {
   .copy-row,
   .token-row {
     grid-template-columns: 1fr;
+  }
+
+  .confirm-row {
+    display: grid;
   }
 
   .stat-grid {
